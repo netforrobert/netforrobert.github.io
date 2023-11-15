@@ -188,10 +188,16 @@
 <li><strong>Docker for Windows的安装</strong></li>
 </ul>
 <ol>
-<li>下载docker for windows<br>点击<a target="_blank" rel="noopener" href="https://www.docker.com/products/docker-desktop/">官网链接</a>，选择docker for windows下载安装</li>
-<li>设置并启动docker<br>2.1 打开设置setting-&gt;General<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/dockersetting.png" alt="dockersetting" title="打开Docker设置"><br>2.2 勾选:Use the wsl2 based engine，并点击Apply &amp; restart<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/usewsl2.png" alt="usewsl2" title="使用Wsl2引擎"></li>
-<li>设置国内镜像加速<br>由于各种原因，默认的镜像地址经常出现缓慢和不稳定，为了我们顺利的使用docker，需要设置国内镜像加速。<br>3.1 打开settings-&gt;Docker Engine<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/dockerengine.png" alt="dockerengine" title="Docker引擎"><br>3.2 设置registry-mirrors<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;builder&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;gc&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;defaultKeepStorage&quot;</span><span class="punctuation">:</span> <span class="string">&quot;20GB&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">     <span class="attr">&quot;experimental&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">     <span class="attr">&quot;registry-mirrors&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;https://自己生成.mirror.aliyuncs.com&quot;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-国内常用的镜像加速地址：<table>
+<li><p>下载docker for windows<br>点击<a target="_blank" rel="noopener" href="https://www.docker.com/products/docker-desktop/">官网链接</a>，选择docker for windows下载安装</p>
+</li>
+<li><p>设置并启动docker<br>2.1 打开设置setting-&gt;General<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/dockersetting.png" alt="dockersetting" title="打开Docker设置"><br>2.2 勾选:Use the wsl2 based engine，并点击Apply &amp; restart<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/usewsl2.png" alt="usewsl2" title="使用Wsl2引擎"></p>
+</br></li>
+<li><p>设置国内镜像加速<br>由于各种原因，默认的镜像地址经常出现缓慢和不稳定，为了我们顺利的使用docker，需要设置国内镜像加速。<br>3.1 打开settings-&gt;Docker Engine<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/dockerengine.png" alt="dockerengine" title="Docker引擎"><br>3.2 设置registry-mirrors</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;builder&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;gc&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;defaultKeepStorage&quot;</span><span class="punctuation">:</span> <span class="string">&quot;20GB&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">     <span class="attr">&quot;experimental&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">     <span class="attr">&quot;registry-mirrors&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;https://自己生成.mirror.aliyuncs.com&quot;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>国内常用的镜像加速地址：</p>
+</li>
+</ol>
+<table>
 <thead>
 <tr>
 <th>镜像提供商</th>
@@ -211,8 +217,6 @@
 <td>登录：cr.console.aliyun.com</td>
 </tr>
 </tbody></table>
-</li>
-</ol>
 <ul>
 <li><strong>安装启动postresql数据库</strong><blockquote>
 <p>本节内容将完成postgresql的镜像启动，并将涉及docker的一个重要概念：数据卷的运用<br>数据卷的定义：Docker数据卷是一个可以在Docker容器和主机之间共享数据的特殊目录。它允许容器在不影响主机文件系统的情况下访问主机上的文件，并且可以在多个容器之间共享数据。使用数据卷可以方便地将数据持久化保存，并且在容器删除后仍然保留数据。数据卷是Docker中非常方便的功能，可以帮助用户更好地管理和维护容器化应用程序。<br>简略版：你如果不想<strong>数据随着容器的删除而消失</strong>，就必须独立于容器之外的数据卷<br>综上所述：对于启用postgresql容器，使用数据卷挂载是非常必要的</p>
@@ -228,17 +232,17 @@
 </li>
 <li><p>获取Docker镜像<br>2.1 查询目标镜像，输入命令</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker search postgres</span><br></pre></td></tr></table></figure>
-<p><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/searchimages.png" alt="searchimages" title="查询目标镜像"></p>
-</li>
-</ol>
-<p>2.2 拉取镜像</p>
+<p><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/searchimages.png" alt="searchimages" title="查询目标镜像"><br>2.2 拉取镜像</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull postgres</span><br></pre></td></tr></table></figure>
 <p><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/docker-images.png" alt="docker-images" title="本地镜像"></p>
-<ol start="3">
-<li>使用docker run 命令启动容器<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name postgress --restart always -e TZ=&#x27;Asia/Shanghai&#x27; -e POSTGRES_PASSWORD=&#x27;1234qwer&#x27; -e ALLOW_IP_RANGE=0.0.0.0/0 -v pgdata:/var/lib/postgresql/data -p 55435:5432 -d postgres</span><br></pre></td></tr></table></figure>
-查看已启动容器<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure></li>
+</li>
+<li><p>使用docker run 命令启动容器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name postgress --restart always -e TZ=&#x27;Asia/Shanghai&#x27; -e POSTGRES_PASSWORD=&#x27;1234qwer&#x27; -e ALLOW_IP_RANGE=0.0.0.0/0 -v pgdata:/var/lib/postgresql/data -p 55435:5432 -d postgres</span><br></pre></td></tr></table></figure>
+<p>查看已启动容器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure></li>
 </ol>
-<h5 id="命令详解"><a href="#命令详解" class="headerlink" title="命令详解"></a>命令详解</h5><table>
+<p><strong>命令详解</strong></p>
+<table>
 <thead>
 <tr>
 <th>命令名称</th>
@@ -277,7 +281,8 @@
 <ol start="4">
 <li>连接测试数据库<br>  本节将使用pgadmin进行数据库连接测试<br>4.1 打开<a target="_blank" rel="noopener" href="https://www.pgadmin.org/download/pgadmin-4-windows/">官网链接</a>，下载安装<br>4.2 打开Servers-&gt;Register，如下图所示输入各种参数：<br>连接名：<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/pgadmin1.png" alt="连接名" title="连接名"><br>输入账号密码，默认账号postgres<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/pgadmin2.png" alt="账号密码" title="账号密码"><br>连接成功，则可以看到默认数据库postgres<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/pgadmin3.png" alt="默认数据库" title="默认数据库"></li>
 </ol>
-<h5 id="其他常见的docker-run命令"><a href="#其他常见的docker-run命令" class="headerlink" title="其他常见的docker run命令"></a>其他常见的docker run命令</h5><table>
+<p><strong>其他常见的docker run命令</strong></p>
+<table>
 <thead>
 <tr>
 <th>镜像</th>
@@ -409,7 +414,7 @@
             <ul class="statistics">
                 <li>
                     <span>文章</span>
-                    <a href="./archives">3</a>
+                    <a href="./archives">2</a>
                 </li>
                 <li>
                     <span>字数</span>
@@ -445,10 +450,6 @@
         
           <li>
             <a href="/2023/11/09/Windows%E4%B8%8B%E4%BD%BF%E7%94%A8docker%E8%BF%9B%E8%A1%8C%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87/">Windows下使用docker进行开发调试环境准备</a>
-          </li>
-        
-          <li>
-            <a href="/2023/11/08/%E6%88%91%E7%9A%84%E6%96%87%E7%AB%A0/">我的文章</a>
           </li>
         
           <li>

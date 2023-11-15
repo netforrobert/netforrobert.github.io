@@ -184,6 +184,11 @@
 <p>如果仅需要安装docker for windows，那对于wsl2的安装就到此为止了，并不需要安装发行版</p>
 </li>
 </ol>
+</br>
+
+<hr>
+</br>
+
 <ul>
 <li><strong>Docker for Windows的安装</strong></li>
 </ul>
@@ -217,6 +222,11 @@
 </tbody></table>
 </li>
 </ol>
+</br>
+
+<hr>
+</br>
+
 <ul>
 <li><strong>安装启动postresql数据库</strong><blockquote>
 <p>本节内容将完成postgresql的镜像启动，并将涉及docker的一个重要概念：数据卷的运用<br>数据卷的定义：Docker数据卷是一个可以在Docker容器和主机之间共享数据的特殊目录。它允许容器在不影响主机文件系统的情况下访问主机上的文件，并且可以在多个容器之间共享数据。使用数据卷可以方便地将数据持久化保存，并且在容器删除后仍然保留数据。数据卷是Docker中非常方便的功能，可以帮助用户更好地管理和维护容器化应用程序。<br>简略版：你如果不想<strong>数据随着容器的删除而消失</strong>，就必须独立于容器之外的数据卷<br>综上所述：对于启用postgresql容器，使用数据卷挂载是非常必要的</p>
@@ -291,8 +301,13 @@
 <p><strong>nginx:</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart always -d -p 80:80 --name my-nginx -v nginx-config:/etc/nginx/conf.d nginx</span><br></pre></td></tr></table></figure></li>
 </ol>
+</br>
+
+<hr>
+</br>
+
 <ul>
-<li>总结<br>本文讨论如何在windows环境下如何使用docker for windows搭建软件开发的调试环境，主要集中演示了如何安装docker for windows，并运行了postgresql容器。由于范围限定在开发调试环境，因此不设计生产环境的部署，也不推荐将上述配置用于生产。<br>数据卷的使用。如果你希望数据不随容器的关闭移除而消失，则必须使用数据卷挂载，请根据实际情况进行取舍</li>
+<li><strong>总结</strong><br>本文讨论如何在windows环境下如何使用docker for windows搭建软件开发的调试环境，主要集中演示了如何安装docker for windows，并运行了postgresql容器。由于范围限定在开发调试环境，因此不设计生产环境的部署，也不推荐将上述配置用于生产。<br>数据卷的使用。如果你希望数据不随容器的关闭移除而消失，则必须使用数据卷挂载，请根据实际情况进行取舍</li>
 </ul>
 
       </section>

@@ -194,9 +194,7 @@
 </br></li>
 <li><p>设置国内镜像加速<br>由于各种原因，默认的镜像地址经常出现缓慢和不稳定，为了我们顺利的使用docker，需要设置国内镜像加速。<br>3.1 打开settings-&gt;Docker Engine<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/dockerengine.png" alt="dockerengine" title="Docker引擎"><br>3.2 设置registry-mirrors</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;builder&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;gc&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;defaultKeepStorage&quot;</span><span class="punctuation">:</span> <span class="string">&quot;20GB&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">     <span class="attr">&quot;experimental&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">     <span class="attr">&quot;registry-mirrors&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;https://自己生成.mirror.aliyuncs.com&quot;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<p>国内常用的镜像加速地址：</p>
-</li>
-</ol>
+<p><strong>国内常用的镜像加速地址：</strong></p>
 <table>
 <thead>
 <tr>
@@ -217,6 +215,8 @@
 <td>登录：cr.console.aliyun.com</td>
 </tr>
 </tbody></table>
+</li>
+</ol>
 <ul>
 <li><strong>安装启动postresql数据库</strong><blockquote>
 <p>本节内容将完成postgresql的镜像启动，并将涉及docker的一个重要概念：数据卷的运用<br>数据卷的定义：Docker数据卷是一个可以在Docker容器和主机之间共享数据的特殊目录。它允许容器在不影响主机文件系统的情况下访问主机上的文件，并且可以在多个容器之间共享数据。使用数据卷可以方便地将数据持久化保存，并且在容器删除后仍然保留数据。数据卷是Docker中非常方便的功能，可以帮助用户更好地管理和维护容器化应用程序。<br>简略版：你如果不想<strong>数据随着容器的删除而消失</strong>，就必须独立于容器之外的数据卷<br>综上所述：对于启用postgresql容器，使用数据卷挂载是非常必要的</p>
@@ -239,8 +239,7 @@
 <li><p>使用docker run 命令启动容器</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name postgress --restart always -e TZ=&#x27;Asia/Shanghai&#x27; -e POSTGRES_PASSWORD=&#x27;1234qwer&#x27; -e ALLOW_IP_RANGE=0.0.0.0/0 -v pgdata:/var/lib/postgresql/data -p 55435:5432 -d postgres</span><br></pre></td></tr></table></figure>
 <p>查看已启动容器</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure></li>
-</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
 <p><strong>命令详解</strong></p>
 <table>
 <thead>
@@ -278,42 +277,20 @@
 <td>设置端口映射。55435（宿主机端口）:5432（容器端口）</td>
 </tr>
 </tbody></table>
-<ol start="4">
-<li>连接测试数据库<br>  本节将使用pgadmin进行数据库连接测试<br>4.1 打开<a target="_blank" rel="noopener" href="https://www.pgadmin.org/download/pgadmin-4-windows/">官网链接</a>，下载安装<br>4.2 打开Servers-&gt;Register，如下图所示输入各种参数：<br>连接名：<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/pgadmin1.png" alt="连接名" title="连接名"><br>输入账号密码，默认账号postgres<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/pgadmin2.png" alt="账号密码" title="账号密码"><br>连接成功，则可以看到默认数据库postgres<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/pgadmin3.png" alt="默认数据库" title="默认数据库"></li>
+</li>
+<li><p>连接测试数据库<br>  本节将使用pgadmin进行数据库连接测试<br>4.1 打开<a target="_blank" rel="noopener" href="https://www.pgadmin.org/download/pgadmin-4-windows/">官网链接</a>，下载安装<br>4.2 打开Servers-&gt;Register，如下图所示输入各种参数：<br>连接名：<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/pgadmin1.png" alt="连接名" title="连接名"><br>输入账号密码，默认账号postgres<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/pgadmin2.png" alt="账号密码" title="账号密码"><br>连接成功，则可以看到默认数据库postgres<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/pgadmin3.png" alt="默认数据库" title="默认数据库"><br>4.3 其他常见的docker run命令<br><strong>ladp:</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart always -p 389:389 -p 636:636 --name my_ldap --network bridge --hostname openldap-host --env LDAP_ORGANISATION=&quot;passport&quot; --env LDAP_DOMAIN=&quot;passport.com&quot; --env LDAP_ADMIN_PASSWORD=&quot;1234qwer&quot; -v ldapdata:/etc/ldap/slapd.d -v ldapconfig:/var/lib/ldap --detach osixia/openldap</span><br></pre></td></tr></table></figure>
+<p><strong>rabbitmq:</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --hostname my-rabbit --name rabbit --restart always -e RABBITMQ_DEFAULT_USER=user -e RABBITMQ_DEFAULT_PASS=password -p 15672:15672 -p 5672:5672 rabbitmq:management</span><br></pre></td></tr></table></figure>
+<p><strong>redis:</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart=always -p 6379:6379 --name redis -d redis</span><br></pre></td></tr></table></figure>
+<p><strong>zookeeper:</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -e TZ=&quot;Asia/Shanghai&quot; -p 2181:2181 -v $PWD/data:/data --name zookeeper --restart always zookeeper</span><br></pre></td></tr></table></figure>
+<p><strong>postgres:</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name postgress --restart always -e TZ=&#x27;Asia/Shanghai&#x27; -e POSTGRES_PASSWORD=&#x27;1234qwer&#x27; -e ALLOW_IP_RANGE=0.0.0.0/0 -v pgdata:/var/lib/postgresql/data -p 55435:5432 -d postgres</span><br></pre></td></tr></table></figure>
+<p><strong>nginx:</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart always -d -p 80:80 --name my-nginx -v nginx-config:/etc/nginx/conf.d nginx</span><br></pre></td></tr></table></figure></li>
 </ol>
-<p><strong>其他常见的docker run命令</strong></p>
-<table>
-<thead>
-<tr>
-<th>镜像</th>
-<th>命令</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>ldap</td>
-<td>docker run –restart always -p 389:389 -p 636:636 –name my_ldap –network bridge –hostname openldap-host –env LDAP_ORGANISATION&#x3D;”passport” –env LDAP_DOMAIN&#x3D;”passport.com” –env LDAP_ADMIN_PASSWORD&#x3D;”1234qwer” -v ldapdata:&#x2F;etc&#x2F;ldap&#x2F;slapd.d -v ldapconfig:&#x2F;var&#x2F;lib&#x2F;ldap –detach osixia&#x2F;openldap</td>
-</tr>
-<tr>
-<td>rabbitmq</td>
-<td>docker run -d –hostname my-rabbit –name rabbit –restart always -e RABBITMQ_DEFAULT_USER&#x3D;user -e RABBITMQ_DEFAULT_PASS&#x3D;password -p 15672:15672 -p 5672:5672 rabbitmq:management</td>
-</tr>
-<tr>
-<td>redis</td>
-<td>docker run –restart&#x3D;always -p 6379:6379 –name redis -d redis</td>
-</tr>
-<tr>
-<td>zookeeper</td>
-<td>docker run -d -e TZ&#x3D;”Asia&#x2F;Shanghai” -p 2181:2181 -v $PWD&#x2F;data:&#x2F;data –name zookeeper –restart always zookeeper</td>
-</tr>
-<tr>
-<td>postgres</td>
-<td>docker run -it –name postgress –restart always -e TZ&#x3D;’Asia&#x2F;Shanghai’ -e POSTGRES_PASSWORD&#x3D;’1234qwer’ -e ALLOW_IP_RANGE&#x3D;0.0.0.0&#x2F;0 -v pgdata:&#x2F;var&#x2F;lib&#x2F;postgresql&#x2F;data -p 55435:5432 -d postgres</td>
-</tr>
-<tr>
-<td>nginx</td>
-<td>docker run –restart always -d -p 80:80 –name my-nginx -v nginx-config:&#x2F;etc&#x2F;nginx&#x2F;conf.d nginx</td>
-</tr>
-</tbody></table>
 <ul>
 <li>总结<br>本文讨论如何在windows环境下如何使用docker for windows搭建软件开发的调试环境，主要集中演示了如何安装docker for windows，并运行了postgresql容器。由于范围限定在开发调试环境，因此不设计生产环境的部署，也不推荐将上述配置用于生产。<br>数据卷的使用。如果你希望数据不随容器的关闭移除而消失，则必须使用数据卷挂载，请根据实际情况进行取舍</li>
 </ul>

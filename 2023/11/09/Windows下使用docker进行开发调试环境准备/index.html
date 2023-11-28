@@ -299,10 +299,11 @@
 <p><strong>postgres:</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name postgress --restart always -e TZ=&#x27;Asia/Shanghai&#x27; -e POSTGRES_PASSWORD=&#x27;1234qwer&#x27; -e ALLOW_IP_RANGE=0.0.0.0/0 -v pgdata:/var/lib/postgresql/data -p 55435:5432 -d postgres</span><br></pre></td></tr></table></figure>
 <p><strong>nginx:</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart always -d -p 80:80 --name my-nginx -v nginx-config:/etc/nginx/conf.d nginx</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart always -d -p 80:80 --name my-nginx -v nginx-config:/etc/nginx/conf.d nginx</span><br></pre></td></tr></table></figure>
+<p><strong>sqlserver</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -e &quot;ACCEPT_EULA=Y&quot; -e &quot;MSSQL_SA_PASSWORD=Ex@mpleP@ssw0rd!&quot;  -p 1433:1433 --name sqlserver -v mssql_data:/var/opt/mssql  -d mcr.microsoft.com/mssql/server</span><br></pre></td></tr></table></figure>
+</br></li>
 </ol>
-</br>
-
 <hr>
 </br>
 
@@ -372,8 +373,8 @@
     <h3 id="commenttitle" style="margin-top: 20px;margin-left: 10px;">评论区</h3>
     <div id="tcomment"></div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/twikoo@1.0.0/dist/twikoo.all.min.js"></script>
-<script>twikoo.init({ envId: 'shuxhan-2gcz5b7m7f845ec3', el: '#tcomment' })</script>
+<script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.25/dist/twikoo.all.min.js"></script>
+<script>twikoo.init({ envId: 'blogs-4g43f0a9ae87fe8e', el: '#tcomment' })</script>
 
     <div class="right-icon">
       <div id="to-valine" class="right-icon-item">

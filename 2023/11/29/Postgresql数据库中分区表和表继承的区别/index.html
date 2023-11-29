@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   
   <title>
-    Hello World | 荆蛮的小屋
+    Postgresql数据库中分区表和表继承的区别 | 荆蛮的小屋
   </title>
   <meta content="width=device-width, initial-scale=1" name="viewport">
   <meta name="theme-color" content="#4184f3">
@@ -145,7 +145,7 @@
 
       <!-- 标题 -->
       <h1 class="post-title">
-        Hello World
+        Postgresql数据库中分区表和表继承的区别
       </h1>
 
       <section class="post-info post-info-bottom">
@@ -153,7 +153,7 @@
         <!-- 发布时间 -->
         <span class="post-date">
           <span class="post-date-text">
-            发布于: 2023-11-08
+            发布于: 2023-11-29
           </span>
         </span>
         
@@ -170,19 +170,82 @@
 
       <!-- 正文 -->
       <section class="post-content">
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+        <h4 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h4><p>在Postgresql中，经常使用分区表和表继承来处理分表的的场景，而其对应的数据组织和管理策略则不尽相同，本文主要对比分区表和表继承在分表场景的异同</p>
+<h4 id="具体对比"><a href="#具体对比" class="headerlink" title="具体对比"></a>具体对比</h4><table>
+<thead>
+<tr>
+<th>对比类型</th>
+<th>分区表</th>
+<th>表继承</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据操作-写入</td>
+<td>根据分区规则自动路由</td>
+<td>需要创建insert触发器，依赖触发器来完成数据路由</td>
+</tr>
+<tr>
+<td>数据操作-更新</td>
+<td>只需操作主表</td>
+<td>只需操作主表</td>
+</tr>
+<tr>
+<td>数据操作-删除</td>
+<td>只需操作主表</td>
+<td>只需操作主表</td>
+</tr>
+<tr>
+<td>查询对象</td>
+<td>针对主表查询即可</td>
+<td>针对主表查询即可</td>
+</tr>
+<tr>
+<td>查询性能</td>
+<td>分区表有明确的分区条件，在查询的时候仅扫描相关分区，从而提升性能</td>
+<td>不会划分物理分区，所有数据都保存在各个表当中</td>
+</tr>
+<tr>
+<td>表结构管理-新建子表</td>
+<td>手动创建</td>
+<td>手动创建</td>
+</tr>
+<tr>
+<td>表结构管理-主键</td>
+<td>主表的主键默认为全局主键，自动作用于分区表</td>
+<td>需要各自管理主键</td>
+</tr>
+<tr>
+<td>表结构管理-索引</td>
+<td>主表通过建立全局索引（默认），可作用于所有分区表（也可以在分区表上建立局部索引）</td>
+<td>需要各自管理索引</td>
+</tr>
+<tr>
+<td>表结构管理-字段</td>
+<td>主表和子表字段必须完全一致</td>
+<td>子表和主表的字段可以不一致</td>
+</tr>
+<tr>
+<td>表结构管理-唯一约束</td>
+<td>唯一约束（如主键）需包含分区键</td>
+<td>无要求（未确认）</td>
+</tr>
+<tr>
+<td>表结构管理-分区规则</td>
+<td><li>范围分区<li>列表分区<li>哈希分区<li>自定义分区</td>
+<td>无明确的分区规则，需自行处理</td>
+</tr>
+<tr>
+<td>数据管理-备份</td>
+<td>可单独备份分区表</td>
+<td>可单独备份子表</td>
+</tr>
+<tr>
+<td>数据管理-删除子表</td>
+<td>drop对应分区表即可，可以非常快的移除百万级的数据</td>
+<td>通过解除子表的关系可达到移除子表的效果</td>
+</tr>
+</tbody></table>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>从上述的对比中，我们不难发现，分区表适合进行水平分表。而表继承的设计较为灵活，更适合应对模型当中的集成结构，适合垂直分表</p>
 
       </section>
 
@@ -201,8 +264,8 @@
 	</div>
 	<div>
 		<strong>本文链接：</strong>
-		<a href="https://netforrobert.github.io/hello-world">
-			https://netforrobert.github.io/post/hello-world
+		<a href="https://netforrobert.github.io/Postgresql数据库中分区表和表继承的区别">
+			https://netforrobert.github.io/post/Postgresql数据库中分区表和表继承的区别
 		</a>
 	</div>
 	<div>

@@ -4,6 +4,32 @@
   
     
     <entry>
+      <title>Postgresql和Sqlserver开启两阶段事务</title>
+      <link href="/2023/11/29/Postgresql%E5%92%8CSqlserver%E5%BC%80%E5%90%AF%E4%B8%A4%E9%98%B6%E6%AE%B5%E4%BA%8B%E5%8A%A1/"/>
+      <url>/2023/11/29/Postgresql%E5%92%8CSqlserver%E5%BC%80%E5%90%AF%E4%B8%A4%E9%98%B6%E6%AE%B5%E4%BA%8B%E5%8A%A1/</url>
+      
+        <content type="html"><![CDATA[<h3 id="postgresql配置"><a href="#postgresql配置" class="headerlink" title="postgresql配置"></a>postgresql配置</h3><p>postgresql通过启用max_prepared_transactions来支持两阶段事务</p><ol><li><p><strong>找到postgresql.conf文件</strong><br>  不同环境的postgresql数据库目录结构不尽相同，但关键是找到postgresql.conf，以下是常用的方式。</p><ul><li>使用命令<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo find / -name postgresql.conf</span><br></pre></td></tr></table></figure></li><li>直接访问目录（找到data目录）<br>常见的目录：postgresql&#x2F;{版本号}&#x2F;data，如:postgresql&#x2F;16&#x2F;data，表示postgresql16的data目录</li></ul></li><li><p><strong>启用参数max_prepared_transactions</strong><br>  在上一步找到的postgresql.conf文件找到max_prepared_transactions，并修改为max_prepared_transactions&#x3D;100。<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/prepared_transactions/preparedtransactions/pgsql1.png" alt="prepared_transactions配置"></p><ul><li>上述配置表示最多允许100个预备事务，具体数量请根据实际情况酌情更改</li><li>如果没有max_prepared_transactions参数，可自行添加</li></ul></li><li><p><strong>重启postgresql数据库</strong></p></li></ol><h3 id="sqlserver配置"><a href="#sqlserver配置" class="headerlink" title="sqlserver配置"></a>sqlserver配置</h3><p>sqlserver的两个阶段事务启用较为繁琐，需要在相关的服务器确保msdtc服务的开启，包括<strong>未部署数据库的iis宿主服务器或其他客户端服务器</strong></p><ol><li><p><strong>启动msdtc服务</strong><br>  <img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/prepared_transactions/preparedtransactions/sqlserver1.png" alt="msdtc服务"></p></li><li><p><strong>配置本地DTC</strong><br>  控制面板-&gt;管理工具-&gt;组件服务-&gt;计算机-&gt;我的电脑-&gt;本地DTC，使用下列配置<br>  <img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/prepared_transactions/preparedtransactions/sqlserver2.png" alt="本地dtc配置1"><br>  <img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/prepared_transactions/preparedtransactions/sqlserver3.png" alt="本地dtc配置2"></p></li><li><p><strong>数据库实例的msdts配置(可选配置，实测中未开启也能成功)</strong><br>  如图所示，sqlserver实例-&gt;属性-&gt;连接，勾选：<strong>需要将分布式事务用于服务器到服务器的通信(E)</strong><br>  <img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/prepared_transactions/preparedtransactions/sqlserver4.png" alt="sqlserver实例配置"></p></li><li><p><strong>注意事项</strong></p><ul><li>一般情况下，修改配置可以立即生效，未生效则应尝试重启数据库或服务器</li><li>需要确保msdtc端口可用，下面是建议的windows防火墙的配置<br> <img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/prepared_transactions/preparedtransactions/sqlserver5.png" alt="windows防火墙配置"></li></ul></li></ol>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Postgresql数据库中分区表和表继承的区别</title>
+      <link href="/2023/11/29/Postgresql%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E5%88%86%E5%8C%BA%E8%A1%A8%E5%92%8C%E8%A1%A8%E7%BB%A7%E6%89%BF%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
+      <url>/2023/11/29/Postgresql%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E5%88%86%E5%8C%BA%E8%A1%A8%E5%92%8C%E8%A1%A8%E7%BB%A7%E6%89%BF%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+      
+        <content type="html"><![CDATA[<h4 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h4><p>在Postgresql中，经常使用分区表和表继承来处理分表的的场景，而其对应的数据组织和管理策略则不尽相同，本文主要对比分区表和表继承在分表场景的异同</p><h4 id="具体对比"><a href="#具体对比" class="headerlink" title="具体对比"></a>具体对比</h4><table><thead><tr><th>对比类型</th><th>分区表</th><th>表继承</th></tr></thead><tbody><tr><td>数据操作-写入</td><td>根据分区规则自动路由</td><td>需要创建insert触发器，依赖触发器来完成数据路由</td></tr><tr><td>数据操作-更新</td><td>只需操作主表</td><td>只需操作主表</td></tr><tr><td>数据操作-删除</td><td>只需操作主表</td><td>只需操作主表</td></tr><tr><td>查询对象</td><td>针对主表查询即可</td><td>针对主表查询即可</td></tr><tr><td>查询性能</td><td>分区表有明确的分区条件，在查询的时候仅扫描相关分区，从而提升性能</td><td>不会划分物理分区，所有数据都保存在各个表当中</td></tr><tr><td>表结构管理-新建子表</td><td>手动创建</td><td>手动创建</td></tr><tr><td>表结构管理-主键</td><td>主表的主键默认为全局主键，自动作用于分区表</td><td>需要各自管理主键</td></tr><tr><td>表结构管理-索引</td><td>主表通过建立全局索引（默认），可作用于所有分区表（也可以在分区表上建立局部索引）</td><td>需要各自管理索引</td></tr><tr><td>表结构管理-字段</td><td>主表和子表字段必须完全一致</td><td>子表和主表的字段可以不一致</td></tr><tr><td>表结构管理-唯一约束</td><td>唯一约束（如主键）需包含分区键</td><td>无要求（未确认）</td></tr><tr><td>表结构管理-分区规则</td><td><li>范围分区<li>列表分区<li>哈希分区<li>自定义分区</td><td>无明确的分区规则，需自行处理</td></tr><tr><td>数据管理-备份</td><td>可单独备份分区表</td><td>可单独备份子表</td></tr><tr><td>数据管理-删除子表</td><td>drop对应分区表即可，可以非常快的移除百万级的数据</td><td>通过解除子表的关系可达到移除子表的效果</td></tr></tbody></table><h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>从上述的对比中，我们不难发现，分区表适合进行水平分表。而表继承的设计较为灵活，更适合应对模型当中的集成结构，适合垂直分表</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Windows下使用docker进行开发调试环境准备</title>
       <link href="/2023/11/09/Windows%E4%B8%8B%E4%BD%BF%E7%94%A8docker%E8%BF%9B%E8%A1%8C%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87/"/>
       <url>/2023/11/09/Windows%E4%B8%8B%E4%BD%BF%E7%94%A8docker%E8%BF%9B%E8%A1%8C%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87/</url>

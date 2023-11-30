@@ -302,8 +302,11 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart always -d -p 80:80 --name my-nginx -v nginx-config:/etc/nginx/conf.d nginx</span><br></pre></td></tr></table></figure>
 <p><strong>sqlserver</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -e &quot;ACCEPT_EULA=Y&quot; -e &quot;MSSQL_SA_PASSWORD=Ex@mpleP@ssw0rd!&quot;  -p 1433:1433 --name sqlserver -v mssql_data:/var/opt/mssql  -d mcr.microsoft.com/mssql/server</span><br></pre></td></tr></table></figure>
-</br></li>
+<p><strong>nexus3</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart always -d -p 18081:8081 --name nexus -e NEXUS_SECURITY_RANDOMPASSWORD=false -e NEXUS_SECURITY_DEFAULTADMINPASSWORD=admin123 -v nexus_data:/nexus-data sonatype/nexus3</span><br></pre></td></tr></table></figure></li>
 </ol>
+</br>
+
 <hr>
 </br>
 
@@ -411,7 +414,7 @@
                 </li>
                 <li>
                     <span>字数</span>
-                    <a>2.4k</a>
+                    <a>2.5k</a>
                 </li>
                 <li>
                     <span>访客</span>

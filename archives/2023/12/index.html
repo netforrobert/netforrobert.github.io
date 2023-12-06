@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   
   <title>
-    Postgresql和Sqlserver开启两阶段事务 | 荆蛮的小屋
+    归档: 2023/12 | 荆蛮的小屋
   </title>
   <meta content="width=device-width, initial-scale=1" name="viewport">
   <meta name="theme-color" content="#4184f3">
@@ -135,150 +135,28 @@
 				<div class="container content">
 					<div class="scene_element scene_element--fadein">
 						<div class="row">
-  <div class="main main-article">
-    <article>
-
-      
-        <header class="post-header no-cover">
-      
-        </header>
-
-      <!-- 标题 -->
-      <h1 class="post-title">
-        Postgresql和Sqlserver开启两阶段事务
-      </h1>
-
-      <section class="post-info post-info-bottom">
-
-        <!-- 发布时间 -->
-        <span class="post-date">
-          <span class="post-date-text">
-            发布于: 2023-11-29
-          </span>
-        </span>
+    <div class="main">
+   
+        <article class="title-list">
+            
+            
+            <section>
+                <time class="post-date" datetime="2023-12-06T07:36:39.000Z">
+                    2023-12-06
+                </time>
+                <a href="/2023/12/06/RPS%E7%B3%BB%E7%BB%9F-%E8%AE%BE%E6%83%B3/">
+                    RPS系统-设想
+                </a>
+                
+            </section>
+            
+        </article>
         
-        <!-- 分类 -->
-        
-
-        <!-- 标签 -->
-        
-
-        <!-- 阅读量统计 -->
-        
-
-      </section>
-
-      <!-- 正文 -->
-      <section class="post-content">
-        <h3 id="postgresql配置"><a href="#postgresql配置" class="headerlink" title="postgresql配置"></a>postgresql配置</h3><p>postgresql通过启用max_prepared_transactions来支持两阶段事务</p>
-<ol>
-<li><p><strong>找到postgresql.conf文件</strong><br>  不同环境的postgresql数据库目录结构不尽相同，但关键是找到postgresql.conf，以下是常用的方式。</p>
-<ul>
-<li>使用命令<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo find / -name postgresql.conf</span><br></pre></td></tr></table></figure></li>
-<li>直接访问目录（找到data目录）<br>常见的目录：postgresql&#x2F;{版本号}&#x2F;data，如:postgresql&#x2F;16&#x2F;data，表示postgresql16的data目录</li>
-</ul>
-</li>
-<li><p><strong>启用参数max_prepared_transactions</strong><br>  在上一步找到的postgresql.conf文件找到max_prepared_transactions，并修改为max_prepared_transactions&#x3D;100。<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/prepared_transactions/preparedtransactions/pgsql1.png" alt="prepared_transactions配置"></p>
-<ul>
-<li>上述配置表示最多允许100个预备事务，具体数量请根据实际情况酌情更改</li>
-<li>如果没有max_prepared_transactions参数，可自行添加</li>
-</ul>
-</li>
-<li><p><strong>重启postgresql数据库</strong></p>
-</li>
-</ol>
-<h3 id="sqlserver配置"><a href="#sqlserver配置" class="headerlink" title="sqlserver配置"></a>sqlserver配置</h3><p>sqlserver的两个阶段事务启用较为繁琐，需要在相关的服务器确保msdtc服务的开启，包括<strong>未部署数据库的iis宿主服务器或其他客户端服务器</strong></p>
-<ol>
-<li><p><strong>启动msdtc服务</strong><br>  <img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/prepared_transactions/preparedtransactions/sqlserver1.png" alt="msdtc服务"></p>
-</li>
-<li><p><strong>配置本地DTC</strong><br>  控制面板-&gt;管理工具-&gt;组件服务-&gt;计算机-&gt;我的电脑-&gt;本地DTC，使用下列配置<br>  <img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/prepared_transactions/preparedtransactions/sqlserver2.png" alt="本地dtc配置1"><br>  <img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/prepared_transactions/preparedtransactions/sqlserver3.png" alt="本地dtc配置2"></p>
-</li>
-<li><p><strong>数据库实例的msdts配置(可选配置，实测中未开启也能成功)</strong><br>  如图所示，sqlserver实例-&gt;属性-&gt;连接，勾选：<strong>需要将分布式事务用于服务器到服务器的通信(E)</strong><br>  <img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/prepared_transactions/preparedtransactions/sqlserver4.png" alt="sqlserver实例配置"></p>
-</li>
-<li><p><strong>注意事项</strong></p>
-<ul>
-<li>一般情况下，修改配置可以立即生效，未生效则应尝试重启数据库或服务器</li>
-<li>需要确保msdtc端口可用，下面是建议的windows防火墙的配置<br> <img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/prepared_transactions/preparedtransactions/sqlserver5.png" alt="windows防火墙配置"></li>
-</ul>
-</li>
-</ol>
-
-      </section>
-
-    </article>
-    
-    
-
-
-    <!-- 版权声明 -->
-    <div class="post-copyright">
-	<div>
-		<strong>本文作者：</strong>
-		<span>
-			荆蛮
-		</span>
-	</div>
-	<div>
-		<strong>本文链接：</strong>
-		<a href="https://netforrobert.github.io/Postgresql和Sqlserver开启两阶段事务">
-			https://netforrobert.github.io/post/Postgresql和Sqlserver开启两阶段事务
-		</a>
-	</div>
-	<div>
-		<span>欢迎任何形式的转载，但请务必注明出处。</span>
-	</div>
-	<div>
-		<span>由于笔者水平有限，如果文章或代码有表述不当之处，还请不吝赐教。</span>
-	</div>
-</div>
-
-
-<style>
-	.post-copyright {
-		background-color: #fff;
-		/* box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.05); */
-		box-shadow: 0 6px 30px -10px rgba(0, 0, 0, 0.1);
-		display: block;
-		margin: 20px auto;
-		margin-bottom: 15px;
-		padding: 10px;
-		font-size: 15px;
-		color: #2e2d2d;
-		word-break: break-all;
-		line-height: 1.8;
-	}
-
-
-	.post-copyright a {
-		color: #2e2d2d;
-		border-bottom: 1px solid #999;
-	}
-
-	.post-copyright a:hover {
-		color: #2e2d2d;
-		border-bottom: 1px solid #000;
-	}
-</style>
-
-    <!-- comments -->
-    <div class="comments">
-    <h3 id="commenttitle" style="margin-top: 20px;margin-left: 10px;">评论区</h3>
-    <div id="tcomment"></div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.25/dist/twikoo.all.min.js"></script>
-<script>twikoo.init({ envId: 'blogs-4g43f0a9ae87fe8e', el: '#tcomment' })</script>
-
-    <div class="right-icon">
-      <div id="to-valine" class="right-icon-item">
-        <a href="#commenttitle">评论</a>
-      </div>
+  
     </div>
-
-  </div>
-
-
-  <aside>
-    <div class="aside-wrap">
+    
+    <aside>
+        <div class="aside-wrap">
     
         <section class="widget-wrap">
     <h3 class="widget-title">简介</h3>
@@ -399,11 +277,9 @@
     
 </div>
 
-
-    <!-- 目录 -->
+    </aside>
+   
     
-  </aside>
-  
 </div>
 
 					</div>

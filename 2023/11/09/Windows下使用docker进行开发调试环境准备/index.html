@@ -1,175 +1,135 @@
 <!DOCTYPE html>
+<html>
 <head>
   <meta charset="utf-8">
   
-  <title>
-    Windows下使用docker进行开发调试环境准备 | 荆蛮的小屋
-  </title>
-  <meta content="width=device-width, initial-scale=1" name="viewport">
-  <meta name="theme-color" content="#4184f3">
+  
+  <title>Windows下使用docker进行开发调试环境准备 | 星空与法则</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   
   
-  <link href="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/images/sh.jpg" rel="icon" />
   
-
+    <link rel="alternate" href="/atom.xml" title="星空与法则" type="application/atom+xml">
   
-<link rel="stylesheet" href="/css/highlight.light.css">
-
   
-<link rel="stylesheet" href="/css/prism-customize.css">
-
+    <link rel="shortcut icon" href="/favicon.png">
   
-<link rel="stylesheet" href="/css/nav-icon.css">
-
   
-<link rel="stylesheet" href="/css/waves.min.css">
-
-  
-<link rel="stylesheet" href="/css/jquery.tocify.css">
-
-  
-<link rel="stylesheet" href="/css/main.css">
-
-  
-<link rel="stylesheet" href="/css/nav-indicator.css">
-
-  
-<link rel="stylesheet" href="/css/twikoo.css">
-
-  
-<link rel="stylesheet" href="/css/search.css">
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
 
   
   
+<link rel="stylesheet" href="/css/style.css">
 
   
-
-  </meta>
-  </meta>
-  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
-  
-<script src="/js/comment.js"></script>
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
 
   
-<script src="/js/copy.js"></script>
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
 
+  
+  
+  
 <meta name="generator" content="Hexo 7.0.0"></head>
 
-	<body>
-		<header>
-			<!-- cover image or sth. -->
-		</header>
-		<div id="main" class="m-scene">
-			
-<div class="nav-wrapper" id="header">
-
-    <div class="container">
-        <nav>
-            
-            
-            <div class="logo wave">
-                <a href="/" id="logo">
-                    荆蛮的小屋
-                </a>
-            </div>
-
-            
-
-            <div class="nav-toggle-icon" >
-                <div class="material-hamburger">
-                    <span>
-                    </span>
-                    <span>
-                    </span>
-                    <span>
-                    </span>
-                </div>
-            </div>
-
-            <div class="menu-wrapper">
-                <div class="nav-indicator">
-                </div>
-                <ul class="menus">
-                    
-                     
-                        <li>
-                            <a class="wave " href="/">
-                                首页
-                            </a>
-                        </li>
-                     
-                        <li>
-                            <a class="wave " href="/archives">
-                                归档
-                            </a>
-                        </li>
-                     
-                        <li>
-                            <a class="wave " href="/about">
-                                关于
-                            </a>
-                        </li>
-                     
-                        <li>
-                            <a class="wave " href="/message">
-                                留言
-                            </a>
-                        </li>
-                     
-                        <li>
-                            <a class="wave " href="/search">
-                                搜索
-                            </a>
-                        </li>
-                     
-                    
-                   
-                </ul>
-            </div>
-
-        </nav>
-    </div>
-</div>
-
-
-				<div class="container content">
-					<div class="scene_element scene_element--fadein">
-						<div class="row">
-  <div class="main main-article">
-    <article>
-
-      
-        <header class="post-header no-cover">
-      
-        </header>
-
-      <!-- 标题 -->
-      <h1 class="post-title">
-        Windows下使用docker进行开发调试环境准备
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">星空与法则</a>
       </h1>
-
-      <section class="post-info post-info-bottom">
-
-        <!-- 发布时间 -->
-        <span class="post-date">
-          <span class="post-date-text">
-            发布于: 2023-11-09
-          </span>
-        </span>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
         
-        <!-- 分类 -->
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> Accueil</a>
         
-
-        <!-- 标签 -->
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> Archive</a>
         
-
-        <!-- 阅读量统计 -->
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> À propos</a>
         
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> RSS</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="Recherche"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
 
-      </section>
+      <div class="outer">
+        <section id="main"><article id="post-Windows下使用docker进行开发调试环境准备" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Windows下使用docker进行开发调试环境准备
+    </h1>
+  
 
-      <!-- 正文 -->
-      <section class="post-content">
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2023-11-09T08:32:54.000Z" itemprop="datePublished">2023年11月09日</time>
+</span>
+      
+      
+        <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2023/11/09/Windows%E4%B8%8B%E4%BD%BF%E7%94%A8docker%E8%BF%9B%E8%A1%8C%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87/#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  Livre d&#39;or
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
         <p>现在的软件项目开发调试日趋复杂，经常需要一堆的软件环境才能正常的进行开发调试。比如数据库、redis、mq等等，这些软件安装麻烦还不好管理，平时不用还占着资源。有没有一种办法解决这个问题呢？答案是有的，我们可以借助docker来完成软件环境的准备，本文将在windows10&#x2F;11的环境下演示使用docker进行开发调试环境准备。</p>
 <ul>
 <li><strong>WSL2环境准备</strong><br>本文只推荐使用基于window for linux的docker安装，原因此处不便展开，具体请百度</li>
@@ -314,139 +274,91 @@
 <li><strong>总结</strong><br>本文讨论如何在windows环境下如何使用docker for windows搭建软件开发的调试环境，主要集中演示了如何安装docker for windows，并运行了postgresql容器。由于范围限定在开发调试环境，因此不设计生产环境的部署，也不推荐将上述配置用于生产。<br>数据卷的使用。如果你希望数据不随容器的关闭移除而消失，则必须使用数据卷挂载，请根据实际情况进行取舍</li>
 </ul>
 
-      </section>
-
-    </article>
-    
-    
-
-
-    <!-- 版权声明 -->
-    <div class="post-copyright">
-	<div>
-		<strong>本文作者：</strong>
-		<span>
-			荆蛮
-		</span>
-	</div>
-	<div>
-		<strong>本文链接：</strong>
-		<a href="https://netforrobert.github.io/Windows下使用docker进行开发调试环境准备">
-			https://netforrobert.github.io/post/Windows下使用docker进行开发调试环境准备
-		</a>
-	</div>
-	<div>
-		<span>欢迎任何形式的转载，但请务必注明出处。</span>
-	</div>
-	<div>
-		<span>由于笔者水平有限，如果文章或代码有表述不当之处，还请不吝赐教。</span>
-	</div>
-</div>
-
-
-<style>
-	.post-copyright {
-		background-color: #fff;
-		/* box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.05); */
-		box-shadow: 0 6px 30px -10px rgba(0, 0, 0, 0.1);
-		display: block;
-		margin: 20px auto;
-		margin-bottom: 15px;
-		padding: 10px;
-		font-size: 15px;
-		color: #2e2d2d;
-		word-break: break-all;
-		line-height: 1.8;
-	}
-
-
-	.post-copyright a {
-		color: #2e2d2d;
-		border-bottom: 1px solid #999;
-	}
-
-	.post-copyright a:hover {
-		color: #2e2d2d;
-		border-bottom: 1px solid #000;
-	}
-</style>
-
-    <!-- comments -->
-    <div class="comments">
-    <h3 id="commenttitle" style="margin-top: 20px;margin-left: 10px;">评论区</h3>
-    <div id="tcomment"></div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.25/dist/twikoo.all.min.js"></script>
-<script>twikoo.init({ envId: 'blogs-4g43f0a9ae87fe8e', el: '#tcomment' })</script>
-
-    <div class="right-icon">
-      <div id="to-valine" class="right-icon-item">
-        <a href="#commenttitle">评论</a>
-      </div>
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> Contenus</h3>
+    <div class="widget">
+      
     </div>
-
   </div>
 
 
-  <aside>
-    <div class="aside-wrap">
-    
-        <section class="widget-wrap">
-    <h3 class="widget-title">简介</h3>
-    <div class="widget">
-        <div class="notice">
-            <img class="notice-img" src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/images/chenglin.jpg">
-            <p>日常记录和文章发布</p>
-            
-            <p class="notice-item">
-                <!-- github -->
-                <span><a target="_blank" href="https://github.com/netforrobert"><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/images/OIP-C.jpg" alt="Github"></a></span>
-                <!-- zhihu -->
-                <span><a target="_blank" href="https://www.zhihu.com"><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/images/zhihu.jpg%21bg" alt="知乎"></a></span>
-                <!-- csdn -->
-                <span><a target="_blank" href="https://blog.csdn.net"><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/images/csdn.webp" alt="CSDN"></a></span>
-            </p>
-
-            <ul class="statistics">
-                <li>
-                    <span>文章</span>
-                    <a href="./archives">5</a>
-                </li>
-                <li>
-                    <span>字数</span>
-                    <a>3.6k</a>
-                </li>
-                <li>
-                    <span>访客</span>
-                    <a id="busuanzi_value_site_uv"></a>
-                </li>
-                
-                
-            </ul>
-
-            <div id="follow" class="button">
-                <a target="_blank" href="https://github.com/shuxhan">关注</a>
             </div>
-        </div>
+        
+        
+          <blockquote id="copyright">
+              <p>Lien original: <a href="https://netforrobert.github.io/2023/11/09/Windows下使用docker进行开发调试环境准备/">https://netforrobert.github.io/2023/11/09/Windows下使用docker进行开发调试环境准备/</a></p>
+              <p>Déclaration de droit d&#39;auteur: 转载请注明出处.</p>
+          </blockquote>
+        
+      
     </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+          
+    <div class="social-share">
+      <span>Partager:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2023/11/08/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          Hello World
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/11/29/Postgresql%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E5%88%86%E5%8C%BA%E8%A1%A8%E5%92%8C%E8%A1%A8%E7%BB%A7%E6%89%BF%E7%9A%84%E5%8C%BA%E5%88%AB/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          Postgresql数据库中分区表和表继承的区别
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
 </section>
-
-    
         
-
+          <aside id="sidebar">
+  
     
-        
-
-    
-        
   <div class="widget-wrap">
-    <h3 class="widget-title">最新文章</h3>
+    <h3 class="widget-title"><i class="fa fa-posts"></i> Récent</h3>
     <div class="widget">
-      <ul class="recent-posts">
-        
-          <li>
-            <a href="/2023/12/06/RPS%E7%B3%BB%E7%BB%9F-%E8%AE%BE%E6%83%B3/">RPS系统-设想</a>
-          </li>
+      <ul>
         
           <li>
             <a href="/2023/11/29/Postgresql%E5%92%8CSqlserver%E5%BC%80%E5%90%AF%E4%B8%A4%E9%98%B6%E6%AE%B5%E4%BA%8B%E5%8A%A1/">Postgresql和Sqlserver开启两阶段事务</a>
@@ -468,212 +380,141 @@
     </div>
   </div>
 
+
+  
     
-        
-  <section class="widget-wrap">
-    <h3 class="widget-title">归档</h3>
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> Archive</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">十二月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">十一月 2023</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023年</a><span class="archive-list-count">4</span></li></ul>
     </div>
-  </section>
+  </div>
 
 
+  
     
-        <!-- 
-  <section class="widget-wrap">
-    <h3 class="widget-title">友情链接</h3>
-    <div>
-      <ul class="widget-links">
-          
-          <li>
-              <a href="https://netforrobert.github.io/" title="">
-                  荆蛮的小屋
-              </a>
-          </li>
-          
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> À suivre</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.example1.com/">site-name1</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.example2.com/">site-name2</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.example3.com/">site-name3</a>
+        </li>
+      
       </ul>
     </div>
-  </section>
+  </div>
 
 
-<style>
-  .widget-links {
-    list-style: none;
-    padding-left: 10px;
-  }
-  .widget-links >li > a:hover {
-    color: #f40;
-    text-decoration: underline;
-  }
-</style>
-    
-    
-</div>
-
-
-    <!-- 目录 -->
-    
-  </aside>
   
-</div>
-
-					</div>
-				</div>
-
-				<!-- 返回顶部按钮 -->
-				<div class="right-icon">
-					<div id="to-top" class="right-icon-item">
-						<a>
-							<span class="top-left"></span>
-							<span class="top-right"></span>
-						</a>
-					</div>
-				</div>
-		</div>
-		<footer class="footer">
-
-    <div class="copyright-wrap">
-      <span>&copy; 2023-2023 荆蛮</span>
-      <span id="timeDate">载入天数...</span><span id="busuanzi_container_site_pv">
-      总访问量<span id="busuanzi_value_site_pv"></span>次
-    </span>
-    
-</div>
-    
-    
-    <!-- <span id="busuanzi_container_site_uv">
-      ，本站访客数<span id="busuanzi_value_site_uv"></span>人次
-    </span> -->
-    
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">Plan du site</a>
+        <span> | </span><a href="/atom.xml">Abonnez-vous à ce site</a>
+        <span> | </span><a href="/about/">Contacter le blogueur</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2024 荆蛮.</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
 </footer>
 
-<script>
-    var now = new Date();
-    function createtime() {
-      var grt = new Date("11/14/2023 12:00:00");//此处修改你的建站时间或者网站上线时间 
-      now.setTime(now.getTime() + 250);
-      days = (now - grt) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
-      document.getElementById("timeDate").innerHTML = "本站已安全运行 " + dnum + " 天 ";
-    }
-    setInterval("createtime()", 1000);
-</script>
-
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-<script src="/lib/jquery.js"></script>
+    </div>
+  </div>
+  
+<script src="/js/jquery-3.4.1.min.js"></script>
 
 
-<script src="/lib/waves.js"></script>
+<script src="/js/search.json.js"></script>
 
 
-<script src="/lib/jquery-ui.js"></script>
-
-
-<script src="/lib/jquery.tocify.js"></script>
-
-
-<script src="/js/main.js"></script>
-
-
-			
-<style>
-  .copy-btn {
-    display: inline-block;
-    padding: 6px 12px;
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 20px;
-    color: rgb(206, 206, 206);
-    white-space: nowrap;
-    vertical-align: middle;
-    cursor: pointer;
-    border-radius: 3px;
-    user-select: none;
-    outline: 0;
-  }
-
-  .copy-btn:hover {
-    color: #888
-  }
-
-  .highlight-wrap .copy-btn {
-    padding: 2px 6px;
-    position: absolute;
-    right: 10px;
-    top: 1px;
-    z-index: 1;
-  }
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
 
 
 
-  .highlight-wrap {
-    position: relative;
-  }
 
-  #copysuccess {
-    width: 200px;
-    height: 75px;
-    position: fixed;
-    right: 50%;
-    margin-right: -100px;
-    top: 40%;
-    margin-top: -40px;
-    color: #fff;
-    font-weight: 600;
-    background: #444444d8;
-    display: none;
-    z-index: 99999;
-    border-radius: 10px;
-    text-align: center;
-    line-height: 30px;
-    padding-top: 10px;
-    user-select: none;
-  }
-</style>
+<script src="/js/script.js"></script>
 
-<script>
-  addLoadEvent(() => {
-    $('.highlight').each(function (i, e) {
-      var $wrap = $('<div>').addClass('highlight-wrap')
-      $(e).after($wrap)
-      $wrap.append($('<div>').addClass('copy-btn').append('复制代码').on('click', function (e) {
-        var copysuccess = document.getElementById('copysuccess');
-        copysuccess.style.display = 'block'
-        setTimeout(function () {
-          copysuccess.style.display = 'none'
-        }, 2000)
-        var code = $(this).parent().find(".code")[0].innerText
-          
-                var ta = document.createElement('textarea')
-        document.body.appendChild(ta)
-        ta.style.position = 'absolute'
-        ta.style.top = '0px'
-        ta.style.left = '0px'
-        ta.value = code
-        ta.select()
-        ta.focus()
-        var result = document.execCommand('copy')
-        document.body.removeChild(ta)
-          
-                  if (result) $(this).text('复制成功')
-            else $(this).text('复制失败')
-              
-                $(this).blur()
-      })).on('mouseleave', function (e) {
-        var $b = $(this).find('.copy-btn')
-        setTimeout(function () {
-          $b.text('复制代码')
-        }, 1000)
-      }).append(e)
-    })
-  })
-</script>
 
-				<div id="copysuccess">复制成功<br>欢迎阅读文章~</div>
-	</body>
 
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+    
+<script src="/localshare/js/social-share.js"></script>
+
+    
+<script src="/localshare/js/qrcode.js"></script>
+
+  
+  
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+</body>
 </html>
-
-<script>
-	$('#to-top').click(function () { $('html,body').animate({ scrollTop: '0px' }, 500); return false; });
-</script>

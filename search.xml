@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>MetaContext框架设想</title>
+      <link href="/2024/04/19/MetaContext%E6%A1%86%E6%9E%B6%E8%AE%BE%E6%83%B3/"/>
+      <url>/2024/04/19/MetaContext%E6%A1%86%E6%9E%B6%E8%AE%BE%E6%83%B3/</url>
+      
+        <content type="html"><![CDATA[<h4 id="修订历史"><a href="#修订历史" class="headerlink" title="修订历史"></a>修订历史</h4><table><thead><tr><th>版本</th><th>日期</th><th>描述</th><th>作者</th></tr></thead><tbody><tr><td>初始V1</td><td>2024-04-19</td><td>整理、建立设想文档，作为MetaContext框架的备忘</td><td>荆蛮</td></tr><tr><td>…….</td><td></td><td></td><td></td></tr></tbody></table><p><br><br></p><h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>框架最终的名称确定为MetaContext，中文名为<strong>元上下文</strong>或<strong>超上下文</strong>。这个命名来源于领域驱动设计中的BoundContext的概念，这就意味着该框架将极为重视领域驱动设计中的战略设计。而在最终的实现当中，Context也将作为设计与编码的共享的一个内核概念，从而有别其他的框架。</p><p>简而言之，MetaContext框架将战略建模和战术建模放在同等重要位置，从而实现对于领域驱动设计的落地，以及对于开发人员的引导</p><br><h4 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h4><ol><li><p><strong>设计初心</strong><br>关于框架的构想最早可以追溯到很多年前第一次接触领域驱动设计的概念，当时的感觉像打开了扇窗，在沉醉于DDD各种模式的同时，也彻底改变了我对于软件系统的设计思路。当时就在想，有没有可能设计一套框架，将一些基本的模式固定下来，作为基础的开发。在那之后，在经过多年开发（编码搬砖）的洗礼、学习、反思和尝试（写过不少半成品框架），终于觉得是时候重写一套框架了，用以回应我内心的需求和记录这些年的尝试心得。</p></li><li><p><strong>问题综述</strong><br>我考察过各类框架，包括ABP，基本上认为他们存在以下几个问题：</p><ul><li>试图满足所有开发人员的需求（不是所有开发人员都能熟练掌握领域驱动设计）。比如ABP，号称是部分实现领域驱动设计的模式，但基本上可以甩开领域驱动设计的约束，这就与我需求不符了。</li><li>ORM+框架。大部分的框架做成了ORM+，也就是仅仅在领域驱动设计当中的仓储问题，这就偏离核心了，仓储是挺无关紧要的部分（我也好奇国内的开发者为什么老盯着ORM不放）</li></ul><p>综上所述，我没有发现符合我需求的框架，同时为了避免方向的偏离，所以我决定开发新的框架。</p></li><li><p><strong>框架定位综述</strong><br>MetaContext框架的定位就是协助落地DDD的战略建模和战术建模。因此对于框架的设计要求是提供DDD所需的元模式，以及尽可能的提供非业务相关的基础服务的需求。</p><ul><li>元模式。包括上下文、聚合根、实体、值对象、领域服务、领域事件、仓储等DDD当中的元模式。</li><li>基础服务。开发工具包，可以执行基础代码的生成，比如映射数据库</li></ul></li></ol><br><h4 id="涉众描述"><a href="#涉众描述" class="headerlink" title="涉众描述"></a>涉众描述</h4><ol><li><p><strong>涉众（非用户）概要</strong><br>（暂无）</p></li><li><p><strong>用户概要</strong><br>目标的框架用户大致分为：</p><ul><li>熟悉DDD的高阶开发人员。比如高级工程师或架构师，对于与这类人群，框架的作用主要是支持，提供可用的元模式和基础服务。</li><li>DDD学习者。这类人群指的是对于DDD不甚了了，但很有兴趣学习的开发人员。因此框架的作用是引导和约束。</li></ul></li><li><p><strong>涉众的关键高阶目标及问题</strong></p></li></ol><table><thead><tr><th>高阶目标</th><th>优先级</th><th>相关问题</th><th>当前解决方案</th></tr></thead><tbody><tr><td>（暂无）</td><td></td><td></td><td></td></tr><tr><td>…</td><td></td><td></td><td></td></tr></tbody></table><br><h4 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h4><ol><li><p><strong>框架展望</strong></p><ul><li>作为系统开发基础框架和服务支撑。</li><li>提供DSL整合进大模型应用开发的工作流当中</li></ul></li><li><p><strong>优点概述</strong></p><ul><li>彻底的、坚定的落地<strong>领域驱动设计</strong></li><li>框架提供超强的扩展性，支持后续的升级和自定义扩展</li><li>计划开发DSL，作为其他工作流的入口</li></ul></li></ol><h4 id="其他需求和约束"><a href="#其他需求和约束" class="headerlink" title="其他需求和约束"></a>其他需求和约束</h4><ol><li>框架的语言。框架的开发语言限制为c#，支持.net6以后得版本</li><li>对于需求的决策。一切不符合领域驱动设计的需求将会被拒绝。</li></ol>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>基于大模型应用的一些思考</title>
       <link href="/2024/03/29/%E5%9F%BA%E4%BA%8E%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/"/>
       <url>/2024/03/29/%E5%9F%BA%E4%BA%8E%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/</url>

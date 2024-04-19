@@ -50,11 +50,11 @@
     <div id="header-inner" class="inner">
       <nav id="main-nav">
         
-          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> Home</a>
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> Start</a>
         
-          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> Archive</a>
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> Archiv</a>
         
-          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> About</a>
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> Über</a>
         
           <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> RSS</a>
         
@@ -62,7 +62,7 @@
     </div>
     <div id="search-form">
       <div id="result-mask" class="hide"></div>
-      <label><input id="search-key" type="text" autocomplete="off" placeholder="search"></label>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="Suche"></label>
       <div id="result-wrap" class="hide">
         <div id="search-result"></div>
       </div>
@@ -123,7 +123,7 @@
     
   
   <i class="fa fa-commt"></i>
-  Guestbook
+  Gästebuch
 </a>
 
 
@@ -153,12 +153,12 @@
 </tr>
 </tbody></table>
 <p><br><br></p>
-<h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>框架最终的名称确定为MetaContext，中文名为<strong>元上下文</strong>或<strong>超上下文</strong>。这个命名来源于领域驱动设计中的BoundContext的概念，这就意味着该框架将极为重视领域驱动设计中的战略设计。而在最终的实现当中，Context也将作为设计与编码的共享的一个内核概念，从而有别其他的框架。</p>
+<h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>框架最终的名称确定为MetaContext，中文名为<strong>元上下文</strong>或<strong>超上下文</strong>。这个命名来源于<strong>领域驱动设计（以下简称DDD）</strong>中的BoundContext的概念，这就意味着该框架将极为重视DDD中的战略设计。而在最终的实现当中，Context也将作为设计与编码的共享的一个内核概念，从而有别其他的框架。</p>
 <p>简而言之，MetaContext框架将战略建模和战术建模放在同等重要位置，从而实现对于领域驱动设计的落地，以及对于开发人员的引导</p>
 <br>
 
 <h4 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h4><ol>
-<li><p><strong>设计初心</strong><br>关于框架的构想最早可以追溯到很多年前第一次接触领域驱动设计的概念，当时的感觉像打开了扇窗，在沉醉于DDD各种模式的同时，也彻底改变了我对于软件系统的设计思路。当时就在想，有没有可能设计一套框架，将一些基本的模式固定下来，作为基础的开发。在那之后，在经过多年开发（编码搬砖）的洗礼、学习、反思和尝试（写过不少半成品框架），终于觉得是时候重写一套框架了，用以回应我内心的需求和记录这些年的尝试心得。</p>
+<li><p><strong>设计初心</strong><br>关于框架的构想最早可以追溯到很多年前第一次接触领域驱动设计的概念，当时的感觉像打开了一扇窗，在沉醉于DDD各种模式的同时，也彻底改变了我对于软件系统的设计思路。当时就在想，有没有可能设计一套框架，将一些基本的模式固定下来，作为基础的开发。在那之后，在经过多年开发（编码搬砖）的洗礼、学习、反思和尝试（写过不少半成品框架），终于觉得是时候重写一套框架了，用以回应我内心的需求和记录这些年的尝试心得。</p>
 </li>
 <li><p><strong>问题综述</strong><br>我考察过各类框架，包括ABP，基本上认为他们存在以下几个问题：</p>
 <ul>
@@ -177,7 +177,10 @@
 <br>
 
 <h4 id="涉众描述"><a href="#涉众描述" class="headerlink" title="涉众描述"></a>涉众描述</h4><ol>
-<li><p><strong>涉众（非用户）概要</strong><br>（暂无）</p>
+<li><p><strong>涉众（非用户）概要</strong></p>
+<ul>
+<li>CTO或CIO或企业架构师。他们关心业务代码可复用性、部署的灵活性、以及能否引导编写高质量的代码，从而提高开发水平。同时关心安全性和是否支持高并发。</li>
+</ul>
 </li>
 <li><p><strong>用户概要</strong><br>目标的框架用户大致分为：</p>
 <ul>
@@ -191,17 +194,35 @@
 <table>
 <thead>
 <tr>
-<th>高阶目标</th>
+<th><div style="width: 100pt">高阶目标</div></th>
 <th>优先级</th>
 <th>相关问题</th>
 <th>当前解决方案</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>（暂无）</td>
-<td></td>
-<td></td>
-<td></td>
+<td><div style="width: 100pt">隐式工作单元</div></td>
+<td><div style="width: 40pt">高</div></td>
+<td>对于工作单元，大部分人的理解都只是批量操作，因此常见的设计方式就是一个List记录显式的记录所有操作，然后显式的批量提交，这其实是一个相当糟糕的设计，因为这会使得开发过程当中过度关注一些非业务因素，从而影响设计</td>
+<td>框架将采用隐式的工作单元，进行自动提交，从代码层面来看，近需要操作仓储层接口；当然，也提供手动显式的使用工作单元</td>
+</tr>
+<tr>
+<td>规避网状的模型设计</td>
+<td>高</td>
+<td>按常见的E-R图方式来设计的实体模型，很容易出现网状结构，导致缺乏重点</td>
+<td>框架将自动检测聚合、实体、值对象的依赖关系，规避出现网状模型的可能</td>
+</tr>
+<tr>
+<td>上下文可合并部署和独立部署</td>
+<td>高</td>
+<td>处于对于灵活部署的需求，对于每一个业务上下文都需要支持可以独立部署以及和其他上下文合并部署，充分表现业务的可复用性</td>
+<td>框架通过应用层动态代理的方式，支持本地调用和远程调用，上下文与下文之间通过应用层接口进行交互，从而实现高度解耦，进而支持灵活部署的需求</td>
+</tr>
+<tr>
+<td>模块化</td>
+<td>高</td>
+<td>通过模块化可以分解开发的关注点，模块应该是自治的，并作为项目的最小单元存在</td>
+<td>框架参考ABP的模块化设计，引导模块化开发</td>
 </tr>
 <tr>
 <td>…</td>
@@ -228,15 +249,16 @@
 </li>
 </ol>
 <h4 id="其他需求和约束"><a href="#其他需求和约束" class="headerlink" title="其他需求和约束"></a>其他需求和约束</h4><ol>
-<li>框架的语言。框架的开发语言限制为c#，支持.net6以后得版本</li>
-<li>对于需求的决策。一切不符合领域驱动设计的需求将会被拒绝。</li>
+<li>框架的语言。框架的开发语言限制为c#，支持.net6以后的版本</li>
+<li>对于需求的决策。一切不符合领域驱动设计的需求将会被拒绝。、</li>
+<li>基础的依赖。框架将选择Autofac组件作为最基础的Ioc容器依赖，同时也支持ServiceCollection服务注册。</li>
 </ol>
 
         
             <div id="toc-article">
                 
   <div class="widget-wrap" id="toc-wrap">
-    <h3 class="widget-title"><i class="fa fa-toc"></i> Contents</h3>
+    <h3 class="widget-title"><i class="fa fa-toc"></i> Inhalte</h3>
     <div class="widget">
       <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E8%AE%A2%E5%8E%86%E5%8F%B2"><span class="toc-text">修订历史</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%BD%8D"><span class="toc-text">定位</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B6%89%E4%BC%97%E6%8F%8F%E8%BF%B0"><span class="toc-text">涉众描述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A6%82%E8%A7%88"><span class="toc-text">概览</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E9%9C%80%E6%B1%82%E5%92%8C%E7%BA%A6%E6%9D%9F"><span class="toc-text">其他需求和约束</span></a></li></ol>
     </div>
@@ -247,8 +269,8 @@
         
         
           <blockquote id="copyright">
-              <p>Original link: <a href="https://netforrobert.github.io/2024/04/19/MetaContext框架设想/">https://netforrobert.github.io/2024/04/19/MetaContext框架设想/</a></p>
-              <p>Copyright Notice: 转载请注明出处.</p>
+              <p>Ursprünglicher Link: <a href="https://netforrobert.github.io/2024/04/19/MetaContext框架设想/">https://netforrobert.github.io/2024/04/19/MetaContext框架设想/</a></p>
+              <p>Copyright-Erklärung: 转载请注明出处.</p>
           </blockquote>
         
       
@@ -261,7 +283,7 @@
           
           
     <div class="social-share">
-      <span>Share:</span>
+      <span>Aktie:</span>
     </div>
 
 
@@ -305,7 +327,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title"><i class="fa fa-posts"></i> Recent</h3>
+    <h3 class="widget-title"><i class="fa fa-posts"></i> Letzte</h3>
     <div class="widget">
       <ul>
         
@@ -342,7 +364,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title"><i class="fa fa-archive"></i> Archive</h3>
+    <h3 class="widget-title"><i class="fa fa-archive"></i> Archiv</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024年</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023年</a><span class="archive-list-count">4</span></li></ul>
     </div>
@@ -386,9 +408,9 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       <p>
-        <a href="/sitemap.xml">Site Map</a>
-        <span> | </span><a href="/atom.xml">Subscribe to this site</a>
-        <span> | </span><a href="/about/">Contact the blogger</a>
+        <a href="/sitemap.xml">Sitemap</a>
+        <span> | </span><a href="/atom.xml">Abonnieren Sie diese Site</a>
+        <span> | </span><a href="/about/">Kontaktieren Sie den Blogger</a>
       </p>
       
         <p>

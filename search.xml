@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>基于大模型应用的一些思考</title>
+      <link href="/2024/03/29/%E5%9F%BA%E4%BA%8E%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/"/>
+      <url>/2024/03/29/%E5%9F%BA%E4%BA%8E%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/</url>
+      
+        <content type="html"><![CDATA[<h4 id="前言简介"><a href="#前言简介" class="headerlink" title="前言简介"></a>前言简介</h4><p>到目前为止（2024年3月29日），从媒体的消息来看，关注的焦点还是集中于大模型本身。比如，Anthropic推出来的Claude 3，谷歌推出Gemini，Meta推出免费的Llama 2等等大模型。也就是大模型本身激战正酣，巨头争相竞技。至于为什么，我觉得就是大模型几乎肉眼可见的潜力（在继VR、MR、区块链、元宇宙等概念之后，终于出现一个够得着的科技概念）。<br>我们来看一张大模型应用的架构图：</p><p><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/think_in_llm/llm-reference-arch.png" alt="大模型应用架构图"></p><p>从上图，我们不难看出，大模型的提供的能力是灵魂所在，是核心的驱动力。从AI应用产业角度来说，大模型是绝对的上游，而且这种联系，将前所未有的紧密，也就是离了大模型，就没有大模型应用（好像是句废话），这就是巨头争相竞技的原因。</p><p>但现在，让我们先把这种神仙打架的事情先放一放，集中精力大模型应用，思考如何释放大模型的洪荒之力。</p><p><strong>（未完待续）</strong></p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Postgresql和Sqlserver开启两阶段事务</title>
       <link href="/2023/11/29/Postgresql%E5%92%8CSqlserver%E5%BC%80%E5%90%AF%E4%B8%A4%E9%98%B6%E6%AE%B5%E4%BA%8B%E5%8A%A1/"/>
       <url>/2023/11/29/Postgresql%E5%92%8CSqlserver%E5%BC%80%E5%90%AF%E4%B8%A4%E9%98%B6%E6%AE%B5%E4%BA%8B%E5%8A%A1/</url>

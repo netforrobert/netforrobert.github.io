@@ -184,7 +184,66 @@
 <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 使用默认模块</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AspectsTests</span> : <span class="title">AbstractTestUnit</span>&lt;<span class="title">DefaulTestModule</span>&gt;</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">Fact</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_SayHi</span>()</span></span><br><span class="line">    &#123; </span><br><span class="line">        <span class="keyword">var</span> helloService = GetService&lt;IHelloService&gt;();</span><br><span class="line">        <span class="keyword">var</span> result = helloService.SayHi();</span><br><span class="line">        Assert.Equal(<span class="string">&quot;你好，世界&quot;</span>, result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 使用包含了Mock代码的模块</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">FakeAspectsTests</span> : <span class="title">AbstractTestUnit</span>&lt;<span class="title">AspectTestsModule</span>&gt;</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">Fact</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_SayHi</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> helloService = GetService&lt;IHelloService&gt;();</span><br><span class="line">        <span class="keyword">var</span> result = helloService.SayHi();</span><br><span class="line">        Assert.Equal(<span class="string">&quot;你已被拦截，这是一个虚假的返回值&quot;</span>, result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 </ol>
 <p>到目前为止，我们成功的实现了对于IHelloService的Mock。对于Mock的使用场景，相信经验丰富的你已经很很多想法了，just do it！去实现它！</p>
-<h4 id="基于特性的Aop"><a href="#基于特性的Aop" class="headerlink" title="基于特性的Aop"></a>基于特性的Aop</h4><p>使用特性(Attribute)实现Aop的方式也很场景，MetaContext框架也支持这样的方式。话不多说，让我们看代码。<br>（未完待续）</p>
+<h4 id="基于特性的Aop"><a href="#基于特性的Aop" class="headerlink" title="基于特性的Aop"></a>基于特性的Aop</h4><p>使用特性(Attribute)实现Aop的方式也很场景，MetaContext框架也支持这样的方式。话不多说，让我们看代码。</p>
+<ol>
+<li><p>新增服务IAopHelloService</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IAopHelloService</span> : <span class="title">IFabrication</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">Hello</span>()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>实现IAopHelloService</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">internal</span> <span class="keyword">class</span> <span class="title">AopHelloService</span> : <span class="title">IAopHelloService</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">Hello</span>()</span> =&gt; <span class="string">&quot;Hello,World&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>新增FakeHelloAttribute，继承自MetaAopAttribute</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">internal</span> <span class="keyword">class</span> <span class="title">FakeHelloAttribute</span> : <span class="title">MetaAopAttribute</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Intercept</span>(<span class="params">IInvocation invocation</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        invocation.ReturnValue = <span class="string">&quot;Fake Hello&quot;</span>;</span><br><span class="line">        <span class="comment">//注释掉继续执行，直接返回结果</span></span><br><span class="line">        <span class="comment">//invocation.Proceed();</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用FakeHelloAttribute修饰方法</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IAopHelloService</span> : <span class="title">IFabrication</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">FakeHello</span>]</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">Hello</span>()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过单元测试验证结果</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 使用默认模块</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AspectsTests</span> : <span class="title">AbstractTestUnit</span>&lt;<span class="title">DefaulTestModule</span>&gt;</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">Fact</span>]</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Test_Hello</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        IAopHelloService aopHelloService = GetService&lt;IAopHelloService&gt;();</span><br><span class="line">        <span class="keyword">var</span> result = aopHelloService.Hello();</span><br><span class="line">        Assert.Equal(<span class="string">&quot;Fake Hello&quot;</span>, result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>从本例中，我们可以得出结论，使用特性的方式进行Aop编程似乎更为简单，但凡事都有代价，在满足以下条件的情况，你可以考虑特性Aop的方式：</p>
+<ul>
+<li>拥有对于接口层代码的修改权限</li>
+<li>接受一定的代码入侵性</li>
+<li>切面的目标没有普遍性，以特例居多</li>
+</ul>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>MetaContext框架基于Castle.DynamicProxy封装了两种Aop方式：</p>
+<ul>
+<li>切面模式，为已注册的服务添加切面，使用较为全局的Aop</li>
+<li>特性模型。适用于特例的Aop，实现低入侵性的功能扩展</li>
+</ul>
+<h4 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h4><ol>
+<li><p>继承自MetaAopAttribute的Aop特性，可以用在任何借口上吗？<br>答：并不是。只有框架自动注册的服务会支持Aop特性，参考下表：</p>
+<table>
+<thead>
+<tr>
+<th>服务类型</th>
+<th>描述</th>
+<th>是否支持Aop特性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IApplicationService</td>
+<td>应用服务</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>IDomainService</td>
+<td>领域服务</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>IFabrication</td>
+<td>纯虚构（无意义主要作为自动注册的约束）</td>
+<td>支持</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>Aop切面的执行顺序是什么样的？<br>答：实现IMetaAspect的切面，按添加顺序的倒序执行，即后添加的先执行；继承自MetaAopAttribute的Aop特性按代码的位置执行</p>
+</li>
+<li><p>MetaContext框架支持自定义的Aop吗？<br>答：当然支持。MetaContext框架兼容Castle.DynamicProxy提供的动态代理功能</p>
+</li>
+</ol>
 
         
             <div id="toc-article">
@@ -192,7 +251,7 @@
   <div class="widget-wrap" id="toc-wrap">
     <h3 class="widget-title"><i class="fa fa-toc"></i> Contents</h3>
     <div class="widget">
-      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E8%A8%80%E6%A6%82%E8%BF%B0"><span class="toc-text">前言概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E5%93%B2%E5%AD%A6"><span class="toc-text">设计哲学</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%E6%A1%88%E4%BE%8B"><span class="toc-text">实践案例</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E5%8D%95%E5%85%83"><span class="toc-text">工作单元</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Mock%E6%9C%8D%E5%8A%A1"><span class="toc-text">Mock服务</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E7%89%B9%E6%80%A7%E7%9A%84Aop"><span class="toc-text">基于特性的Aop</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E8%A8%80%E6%A6%82%E8%BF%B0"><span class="toc-text">前言概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E5%93%B2%E5%AD%A6"><span class="toc-text">设计哲学</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5%E6%A1%88%E4%BE%8B"><span class="toc-text">实践案例</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E5%8D%95%E5%85%83"><span class="toc-text">工作单元</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Mock%E6%9C%8D%E5%8A%A1"><span class="toc-text">Mock服务</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E7%89%B9%E6%80%A7%E7%9A%84Aop"><span class="toc-text">基于特性的Aop</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%8F%E7%BB%93"><span class="toc-text">小结</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="toc-text">常见问题</span></a></li></ol>
     </div>
   </div>
 

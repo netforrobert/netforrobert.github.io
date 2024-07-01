@@ -62,7 +62,7 @@
     </div>
     <div id="search-form">
       <div id="result-mask" class="hide"></div>
-      <label><input id="search-key" type="text" autocomplete="off" placeholder="search"></label>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="Suche"></label>
       <div id="result-wrap" class="hide">
         <div id="search-result"></div>
       </div>
@@ -83,6 +83,129 @@
 
       <div class="outer">
         <section id="main">
+  <article id="post-MetaContext框架的数据审计日志" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2024/07/01/MetaContext%E6%A1%86%E6%9E%B6%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AE%A1%E8%AE%A1%E6%97%A5%E5%BF%97/">MetaContext框架的数据审计日志</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2024-07-01T08:18:38.000Z" itemprop="datePublished">2024年07月01日</time>
+</span>
+      
+      
+      
+<a href="/2024/07/01/MetaContext%E6%A1%86%E6%9E%B6%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AE%A1%E8%AE%A1%E6%97%A5%E5%BF%97/#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  Gästebuch
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="前言背景"><a href="#前言背景" class="headerlink" title="前言背景"></a>前言背景</h4><p><strong>定义</strong>：在软件系统中，数据审计是指对系统中数据的操作进行记录和监控，以确保数据的完整性、合规性和安全性。<br>MetaContext框架实现的数据审计功能特点如下：</p>
+<ul>
+<li>灵活的审计对象选择。可自主选择一个或多个实体&#x2F;聚合进行审计（关键数据才有审计的必要）</li>
+<li>完整的数据跟踪。记录了数据的创建、修改和删除，并记录了完整的新增和变更记录。</li>
+<li>记录执行操作的用户和时间戳。确保关键数据的操作可溯源。</li>
+</ul>
+<p>数据审计的原理比较简单，在efcore的加持之下可轻松实现。在接下来的内容，我们会通过一个例子来介绍如何使用审计日志功能。</p>
+<h4 id="使用审计功能"><a href="#使用审计功能" class="headerlink" title="使用审计功能"></a>使用审计功能</h4><ol>
+<li><p>创建一个聚合根：</p>
+ <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">InventoryItem</span>(<span class="params"><span class="built_in">string</span> id,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="built_in">decimal</span> quantity,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="built_in">string</span> createdBy,</span></span></span><br><span class="line"><span class="params"><span class="function">    DateTime createdTime</span>)</span></span><br><span class="line"><span class="function">    : <span class="title">AggregateRoot</span>&lt;<span class="title">string</span>&gt;(<span class="params">id</span>),</span> </span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">InventoryItem</span>(<span class="params"><span class="built_in">string</span> id</span>)</span></span><br><span class="line"><span class="function">        : <span class="title">this</span>(<span class="params">id, <span class="number">0</span>, <span class="literal">null</span>, DateTime.Now</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">decimal</span> Quantity &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125; = quantity;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> CreatedBy &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125; = createdBy;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> DateTime CreatedTime &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125; = createdTime;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>开启审计日志。在仓储项目中的Context类中增加如下代码：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">sealed</span> <span class="keyword">class</span> <span class="title">RepositoryModule</span> : <span class="title">MetaModule</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Load</span>(<span class="params">IContextConfig contextConfig</span>)</span></span><br><span class="line">        =&gt; contextConfig.AddDbContext&lt;InventoryContext&gt;()</span><br><span class="line">        <span class="comment">//开启对InventoryItem和InboundOrder的审计</span></span><br><span class="line">        .UseAuditLog(cfg =&gt; cfg.Audit&lt;InventoryItem&gt;().Audit&lt;InboundOrder&gt;());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行迁移。在迁移项目的根目录下执行如下命令：</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dotnet ef migrations add auditlogs;</span><br><span class="line">dotnet ef database update</span><br></pre></td></tr></table></figure>
+<p> 上述命令执行完毕，将在数据库中生成存储审计日志的表，默认表名为_auditlog，对应的实体(ConstRecord)属性如代码所示：</p>
+ <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">record</span> <span class="title">AuditLog</span> : <span class="title">ConstRecord</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">long</span> Id &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> FullTypeName &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 聚合跟或实体id</span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> ObjectId &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> AuditOperatedType OperatedType &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span>? Content &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//工作单元Id</span></span><br><span class="line">    <span class="keyword">public</span> Guid UnitOfWorkId &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> ExtraInfo ExtraInfo &#123;  <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> OperatorSign Operator &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> DateTime CreatedTime &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125; = DateTime.UtcNow;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>AuditLog.Content内容详解</p>
+<ul>
+<li>新增<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line"> <span class="attr">&quot;quantity&quot;</span><span class="punctuation">:</span> <span class="number">100</span><span class="punctuation">,</span></span><br><span class="line"> <span class="attr">&quot;createdBy&quot;</span><span class="punctuation">:</span> <span class="string">&quot;noid&quot;</span><span class="punctuation">,</span></span><br><span class="line"> <span class="attr">&quot;createdTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2024-07-01T15:15:23.1097212+08:00&quot;</span><span class="punctuation">,</span></span><br><span class="line"> <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;5e03a0a9-5c5f-45e6-a79c-66f4a5b04380&quot;</span></span><br><span class="line"> <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></li>
+<li>修改<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span></span><br><span class="line"> <span class="punctuation">&#123;</span></span><br><span class="line">     <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Quantity&quot;</span><span class="punctuation">,</span></span><br><span class="line">     <span class="comment">//源值</span></span><br><span class="line">     <span class="attr">&quot;origin&quot;</span><span class="punctuation">:</span> <span class="number">120.0</span><span class="punctuation">,</span></span><br><span class="line">     <span class="comment">//当前值</span></span><br><span class="line">     <span class="attr">&quot;current&quot;</span><span class="punctuation">:</span> <span class="number">90.0</span></span><br><span class="line"> <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line"> <span class="punctuation">&#123;</span></span><br><span class="line">     <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;_rowversion&quot;</span><span class="punctuation">,</span></span><br><span class="line">     <span class="attr">&quot;origin&quot;</span><span class="punctuation">:</span> <span class="number">145413880011965</span><span class="punctuation">,</span></span><br><span class="line">     <span class="attr">&quot;current&quot;</span><span class="punctuation">:</span> <span class="number">145413884213723</span></span><br><span class="line"> <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure></li>
+<li>删除<br>（暂无，修改未记录数据详情）</li>
+</ul>
+</li>
+</ol>
+<p>综上所示，Content的格式为Json字符串，但新增和修改的格式并不相同。</p>
+<br>
+
+<h4 id="更轻量的操作签名"><a href="#更轻量的操作签名" class="headerlink" title="更轻量的操作签名"></a>更轻量的操作签名</h4><p>有些时候，我们只希望简单的记录创建者和最后的修改者，并不希望启用的审计日志模块。MetaContext框架也是支持的，它被命名为：<strong>操作签名</strong>，并提供两种方式来处理操作签名：</p>
+<ul>
+<li><p>使用UseCreatorSignature和UseModifierSignature，修改仓储项目的Context类：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">InventoryContext</span>(<span class="params">IModelProvider modelProvider, </span></span></span><br><span class="line"><span class="params"><span class="function">  IDefaultMappRule defaultMappRule, </span></span></span><br><span class="line"><span class="params"><span class="function">  IServiceResolver serviceResolver</span>) </span></span><br><span class="line"><span class="function">  : <span class="title">SqliteDbContext</span>(<span class="params">modelProvider, defaultMappRule, serviceResolver, </span></span></span><br><span class="line"><span class="params"><span class="function">      <span class="string">$&quot;Data Source=<span class="subst">&#123;UserProfilePath&#125;</span>\\eshop_inventory.db&quot;</span></span>)</span></span><br><span class="line">  &#123;</span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> <span class="built_in">string</span> UserProfilePath =</span><br><span class="line">          Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);</span><br><span class="line"></span><br><span class="line">      <span class="function"><span class="keyword">protected</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">AfterModelCreated</span>(<span class="params">ModelBuilder modelBuilder</span>)</span></span><br><span class="line">      &#123;</span><br><span class="line">          modelBuilder.Entity&lt;InventoryItem&gt;()</span><br><span class="line">              <span class="comment">//开启创建签名和修改签名</span></span><br><span class="line">              .UseCreatorSignature()</span><br><span class="line">              .UseModifierSignature();  </span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码会在InventoryItem增加两个阴影属性_creatorsign和_modifiersign，其数据类型为：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">record</span> <span class="title">OperatorTimeSign</span> : <span class="title">ValObject</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">//操作者Id</span></span><br><span class="line">  <span class="keyword">public</span> <span class="built_in">string</span> Id &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line">  <span class="comment">//操作者名称</span></span><br><span class="line">  <span class="keyword">public</span> <span class="built_in">string</span> Name &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line">  <span class="keyword">public</span> DateTime Time &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>聚合根&#x2F;实体实现ICreatorSign和IModifierSign接口，接口代码如下：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建者签名</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">ICreatorSign</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">Sign</span>(<span class="params">OperatorTimeSign operatorTimeSign</span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//修改者签名</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IModifierSign</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">Sign</span>(<span class="params">OperatorTimeSign sign</span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>当你需要自己处理OperatorTimeSign的存储方式，可采用这种方式</p>
+</li>
+</ul>
+<br>
+
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>本文介绍了两种审计方式，即使用<strong>审计日志</strong>和<strong>操作者签名</strong>，并分别讨论了这种方式的使用场景：</p>
+<ul>
+<li>对于需要记录明细和数据变迁记录，建议开启审计日志。</li>
+<li>简单的记录新增与修改，则秩序使用操作者签名。</li>
+</ul>
+<h4 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h4><ol>
+<li><p>我希望自定义存储审计日志，框架是否支持？<br>答。当然支持。只需自己实现IAuditLogAppender接口，并重新注册服务即可。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title">MetaContext.Audit</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IAuditLogAppender</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Append</span>(<span class="params">AuditLog auditLog</span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>软删除产生的审计会被记录成修改还是删除？<br>答。会被记录成删除，同时生成新值和旧值的明细记录</p>
+</li>
+<li><p>AuditLog.ExtraInfo起什么作用？<br>答：AuditLog.ExtraInfo是一个字典类型的值对象，一般以json的方式存储在数据库中。可用来记录一些额外的信息，这在自定义审计日志存储将非常有用</p>
+</li>
+</ol>
+
+        
+        
+          <blockquote id="copyright">
+              <p>Ursprünglicher Link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
+              <p>Copyright-Erklärung: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+          
+    <div class="social-share">
+      <span>Aktie:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
   <article id="post-MetaContext框架的并发解决方案" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
@@ -110,7 +233,7 @@
 <a href="/2024/06/26/MetaContext%E6%A1%86%E6%9E%B6%E7%9A%84%E5%B9%B6%E5%8F%91%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
-  Guestbook
+  Gästebuch
 </a>
 
 
@@ -239,8 +362,8 @@
         
         
           <blockquote id="copyright">
-              <p>Original link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
-              <p>Copyright Notice: 转载请注明出处.</p>
+              <p>Ursprünglicher Link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
+              <p>Copyright-Erklärung: 转载请注明出处.</p>
           </blockquote>
         
       
@@ -253,7 +376,7 @@
           
           
     <div class="social-share">
-      <span>Share:</span>
+      <span>Aktie:</span>
     </div>
 
 
@@ -294,7 +417,7 @@
 <a href="/2024/05/17/MetaContext%E6%A1%86%E6%9E%B6%E7%9A%84%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8B-Aop/#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
-  Guestbook
+  Gästebuch
 </a>
 
 
@@ -419,8 +542,8 @@
         
         
           <blockquote id="copyright">
-              <p>Original link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
-              <p>Copyright Notice: 转载请注明出处.</p>
+              <p>Ursprünglicher Link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
+              <p>Copyright-Erklärung: 转载请注明出处.</p>
           </blockquote>
         
       
@@ -433,7 +556,7 @@
           
           
     <div class="social-share">
-      <span>Share:</span>
+      <span>Aktie:</span>
     </div>
 
 
@@ -474,7 +597,7 @@
 <a href="/2024/05/11/%E5%9F%BA%E4%BA%8E%E7%94%A8%E4%BE%8B%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%9A%84AI-Agent%E6%80%9D%E8%B7%AF/#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
-  Guestbook
+  Gästebuch
 </a>
 
 
@@ -499,8 +622,8 @@
         
         
           <blockquote id="copyright">
-              <p>Original link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
-              <p>Copyright Notice: 转载请注明出处.</p>
+              <p>Ursprünglicher Link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
+              <p>Copyright-Erklärung: 转载请注明出处.</p>
           </blockquote>
         
       
@@ -513,7 +636,7 @@
           
           
     <div class="social-share">
-      <span>Share:</span>
+      <span>Aktie:</span>
     </div>
 
 
@@ -554,7 +677,7 @@
 <a href="/2024/04/23/%E4%BD%BF%E7%94%A8MetaContext%E6%A1%86%E6%9E%B6%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE/#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
-  Guestbook
+  Gästebuch
 </a>
 
 
@@ -565,8 +688,8 @@
         
         
           <blockquote id="copyright">
-              <p>Original link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
-              <p>Copyright Notice: 转载请注明出处.</p>
+              <p>Ursprünglicher Link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
+              <p>Copyright-Erklärung: 转载请注明出处.</p>
           </blockquote>
         
       
@@ -579,7 +702,7 @@
           
           
     <div class="social-share">
-      <span>Share:</span>
+      <span>Aktie:</span>
     </div>
 
 
@@ -620,7 +743,7 @@
 <a href="/2024/04/20/MetaContext%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4/#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
-  Guestbook
+  Gästebuch
 </a>
 
 
@@ -661,8 +784,8 @@
         
         
           <blockquote id="copyright">
-              <p>Original link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
-              <p>Copyright Notice: 转载请注明出处.</p>
+              <p>Ursprünglicher Link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
+              <p>Copyright-Erklärung: 转载请注明出处.</p>
           </blockquote>
         
       
@@ -675,7 +798,7 @@
           
           
     <div class="social-share">
-      <span>Share:</span>
+      <span>Aktie:</span>
     </div>
 
 
@@ -716,7 +839,7 @@
 <a href="/2024/04/19/MetaContext%E6%A1%86%E6%9E%B6%E8%AE%BE%E6%83%B3/#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
-  Guestbook
+  Gästebuch
 </a>
 
 
@@ -850,8 +973,8 @@
         
         
           <blockquote id="copyright">
-              <p>Original link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
-              <p>Copyright Notice: 转载请注明出处.</p>
+              <p>Ursprünglicher Link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
+              <p>Copyright-Erklärung: 转载请注明出处.</p>
           </blockquote>
         
       
@@ -864,7 +987,7 @@
           
           
     <div class="social-share">
-      <span>Share:</span>
+      <span>Aktie:</span>
     </div>
 
 
@@ -905,7 +1028,7 @@
 <a href="/2024/03/29/%E5%9F%BA%E4%BA%8E%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
-  Guestbook
+  Gästebuch
 </a>
 
 
@@ -921,8 +1044,8 @@
         
         
           <blockquote id="copyright">
-              <p>Original link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
-              <p>Copyright Notice: 转载请注明出处.</p>
+              <p>Ursprünglicher Link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
+              <p>Copyright-Erklärung: 转载请注明出处.</p>
           </blockquote>
         
       
@@ -935,7 +1058,7 @@
           
           
     <div class="social-share">
-      <span>Share:</span>
+      <span>Aktie:</span>
     </div>
 
 
@@ -976,7 +1099,7 @@
 <a href="/2023/11/29/Postgresql%E5%92%8CSqlserver%E5%BC%80%E5%90%AF%E4%B8%A4%E9%98%B6%E6%AE%B5%E4%BA%8B%E5%8A%A1/#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
-  Guestbook
+  Gästebuch
 </a>
 
 
@@ -1019,8 +1142,8 @@
         
         
           <blockquote id="copyright">
-              <p>Original link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
-              <p>Copyright Notice: 转载请注明出处.</p>
+              <p>Ursprünglicher Link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
+              <p>Copyright-Erklärung: 转载请注明出处.</p>
           </blockquote>
         
       
@@ -1033,7 +1156,7 @@
           
           
     <div class="social-share">
-      <span>Share:</span>
+      <span>Aktie:</span>
     </div>
 
 
@@ -1074,7 +1197,7 @@
 <a href="/2023/11/29/Postgresql%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E5%88%86%E5%8C%BA%E8%A1%A8%E5%92%8C%E8%A1%A8%E7%BB%A7%E6%89%BF%E7%9A%84%E5%8C%BA%E5%88%AB/#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
-  Guestbook
+  Gästebuch
 </a>
 
 
@@ -1161,8 +1284,8 @@
         
         
           <blockquote id="copyright">
-              <p>Original link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
-              <p>Copyright Notice: 转载请注明出处.</p>
+              <p>Ursprünglicher Link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
+              <p>Copyright-Erklärung: 转载请注明出处.</p>
           </blockquote>
         
       
@@ -1175,218 +1298,7 @@
           
           
     <div class="social-share">
-      <span>Share:</span>
-    </div>
-
-
-
-        </div>
-      
-      
-      
-    </footer>
-  </div>
-</article>
-
-
-  <article id="post-Windows下使用docker进行开发调试环境准备" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2023/11/09/Windows%E4%B8%8B%E4%BD%BF%E7%94%A8docker%E8%BF%9B%E8%A1%8C%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87/">Windows下使用docker进行开发调试环境准备</a>
-    </h1>
-  
-
-
-      </header>
-    
-    <div class="article-meta">
-      
-      <span class="article-date">
-  <i class="fa fa-date"></i>
-  <time class="dt-published" datetime="2023-11-09T08:32:54.000Z" itemprop="datePublished">2023年11月09日</time>
-</span>
-      
-      
-      
-<a href="/2023/11/09/Windows%E4%B8%8B%E4%BD%BF%E7%94%A8docker%E8%BF%9B%E8%A1%8C%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87/#comments" class="article-comment-link">
-  
-  <i class="fa fa-commt"></i>
-  Guestbook
-</a>
-
-
-    </div>
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>现在的软件项目开发调试日趋复杂，经常需要一堆的软件环境才能正常的进行开发调试。比如数据库、redis、mq等等，这些软件安装麻烦还不好管理，平时不用还占着资源。有没有一种办法解决这个问题呢？答案是有的，我们可以借助docker来完成软件环境的准备，本文将在windows10&#x2F;11的环境下演示使用docker进行开发调试环境准备。</p>
-<ul>
-<li><strong>WSL2环境准备</strong><br>本文只推荐使用基于window for linux的docker安装，原因此处不便展开，具体请百度</li>
-</ul>
-<ol>
-<li><p>打开系统虚拟机平台和WSL(适用于Linux的window子系统)。<br>控制面板-&gt;程序-&gt;启用或关闭Windows功能-&gt;向下滑 勾选以下两项功能。<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/winfeatures.png" alt="winfeatures" title="windows功能"></p>
-</li>
-<li><p>下载支持Linux的内核wsl2<br>点击<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/windows/wsl/wsl2-kernel">官网链接</a>，下载最新版本的更新包，双击运行安装即可。这时你的wsl就为wsl2了</p>
-</li>
-<li><p>设置Wsl默认版本<br>打开Powershell，输入命令：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl --set -default -version 2</span><br></pre></td></tr></table></figure>
-<p>如果仅需要安装docker for windows，那对于wsl2的安装就到此为止了，并不需要安装发行版</p>
-</li>
-</ol>
-</br>
-
-<hr>
-</br>
-
-<ul>
-<li><strong>Docker for Windows的安装</strong></li>
-</ul>
-<ol>
-<li><p>下载docker for windows<br>点击<a target="_blank" rel="noopener" href="https://www.docker.com/products/docker-desktop/">官网链接</a>，选择docker for windows下载安装</p>
-</li>
-<li><p>设置并启动docker<br>2.1 打开设置setting-&gt;General<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/dockersetting.png" alt="dockersetting" title="打开Docker设置"><br>2.2 勾选:Use the wsl2 based engine，并点击Apply &amp; restart<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/usewsl2.png" alt="usewsl2" title="使用Wsl2引擎"></p>
-</li>
-<li><p>设置国内镜像加速<br>由于各种原因，默认的镜像地址经常出现缓慢和不稳定，为了我们顺利的使用docker，需要设置国内镜像加速。<br>3.1 打开settings-&gt;Docker Engine<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/dockerengine.png" alt="dockerengine" title="Docker引擎"><br>3.2 设置registry-mirrors</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;builder&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;gc&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;defaultKeepStorage&quot;</span><span class="punctuation">:</span> <span class="string">&quot;20GB&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">     <span class="attr">&quot;experimental&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">     <span class="attr">&quot;registry-mirrors&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;https://自己生成.mirror.aliyuncs.com&quot;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<p><strong>国内常用的镜像加速地址：</strong></p>
-<table>
-<thead>
-<tr>
-<th>镜像提供商</th>
-<th>地址url</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Docker中国区官方镜像</td>
-<td><a target="_blank" rel="noopener" href="https://registry.docker-cn.com/">https://registry.docker-cn.com</a></td>
-</tr>
-<tr>
-<td>网易</td>
-<td><a target="_blank" rel="noopener" href="http://hub-mirror.c.163.com/">http://hub-mirror.c.163.com</a></td>
-</tr>
-<tr>
-<td>阿里云（需要自己生成）</td>
-<td>登录：cr.console.aliyun.com</td>
-</tr>
-</tbody></table>
-</li>
-</ol>
-</br>
-
-<hr>
-</br>
-
-<ul>
-<li><strong>安装启动postresql数据库</strong><blockquote>
-<p>本节内容将完成postgresql的镜像启动，并将涉及docker的一个重要概念：数据卷的运用<br>数据卷的定义：Docker数据卷是一个可以在Docker容器和主机之间共享数据的特殊目录。它允许容器在不影响主机文件系统的情况下访问主机上的文件，并且可以在多个容器之间共享数据。使用数据卷可以方便地将数据持久化保存，并且在容器删除后仍然保留数据。数据卷是Docker中非常方便的功能，可以帮助用户更好地管理和维护容器化应用程序。<br>简略版：你如果不想<strong>数据随着容器的删除而消失</strong>，就必须独立于容器之外的数据卷<br>综上所述：对于启用postgresql容器，使用数据卷挂载是非常必要的</p>
-</blockquote>
-</li>
-</ul>
-<ol>
-<li><p>创建数据卷<br>1.1 使用下面的命令创建名为pgdata的数据卷</p>
-<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">volume</span><span class="language-bash"> create pgdata</span></span><br></pre></td></tr></table></figure>
-<p>1.2 查看数据卷，输入命令：</p>
-<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">volume</span><span class="language-bash"> list</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/volume-list.png" alt="dockervolumes" title="查看数据卷"></p>
-</li>
-<li><p>获取Docker镜像<br>2.1 查询目标镜像，输入命令</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker search postgres</span><br></pre></td></tr></table></figure>
-<p><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/searchimages.png" alt="searchimages" title="查询目标镜像"><br>2.2 拉取镜像</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull postgres</span><br></pre></td></tr></table></figure>
-<p><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/docker-images.png" alt="docker-images" title="本地镜像"></p>
-</li>
-<li><p>使用docker run 命令启动容器</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name postgress --restart always -e TZ=&#x27;Asia/Shanghai&#x27; -e POSTGRES_PASSWORD=&#x27;1234qwer&#x27; -e ALLOW_IP_RANGE=0.0.0.0/0 -v pgdata:/var/lib/postgresql/data -p 55435:5432 -d postgres</span><br></pre></td></tr></table></figure>
-<p>查看已启动容器</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
-<p><strong>命令详解</strong></p>
-<table>
-<thead>
-<tr>
-<th>命令名称</th>
-<th>解释及描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>–name</td>
-<td>容器名称</td>
-</tr>
-<tr>
-<td>–restart always</td>
-<td>容器随docker启动而自动启动</td>
-</tr>
-<tr>
-<td>-e TZ&#x3D;’Asia&#x2F;Shanghai’</td>
-<td>设置时区</td>
-</tr>
-<tr>
-<td>-e POSTGRES_PASSWORD&#x3D;’1234qwer</td>
-<td>设置密码为1234qwer</td>
-</tr>
-<tr>
-<td>-e ALLOW_IP_RANGE&#x3D;0.0.0.0&#x2F;0</td>
-<td>允许远程访问</td>
-</tr>
-<tr>
-<td>-v pgdata:&#x2F;var&#x2F;lib&#x2F;postgresql&#x2F;data -p 55435:5432 -d postgres</td>
-<td>挂载数据目录到<strong>卷：pgdata</strong>（也就是我们第一步创建的数据卷）</td>
-</tr>
-<tr>
-<td>-p 55435:5432</td>
-<td>设置端口映射。55435（宿主机端口）:5432（容器端口）</td>
-</tr>
-</tbody></table>
-</li>
-<li><p>连接测试数据库<br>  本节将使用pgadmin进行数据库连接测试<br>4.1 打开<a target="_blank" rel="noopener" href="https://www.pgadmin.org/download/pgadmin-4-windows/">官网链接</a>，下载安装<br>4.2 打开Servers-&gt;Register，如下图所示输入各种参数：<br>连接名：<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/pgadmin1.png" alt="连接名" title="连接名"><br>输入账号密码，默认账号postgres<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/pgadmin2.png" alt="账号密码" title="账号密码"><br>连接成功，则可以看到默认数据库postgres<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/pgadmin3.png" alt="默认数据库" title="默认数据库"><br>4.3 其他常见的docker run命令<br><strong>ladp:</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart always -p 389:389 -p 636:636 --name my_ldap --network bridge --hostname openldap-host --env LDAP_ORGANISATION=&quot;passport&quot; --env LDAP_DOMAIN=&quot;passport.com&quot; --env LDAP_ADMIN_PASSWORD=&quot;1234qwer&quot; -v ldapdata:/etc/ldap/slapd.d -v ldapconfig:/var/lib/ldap --detach osixia/openldap</span><br></pre></td></tr></table></figure>
-<p><strong>rabbitmq:</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --hostname my-rabbit --name rabbit --restart always -e RABBITMQ_DEFAULT_USER=user -e RABBITMQ_DEFAULT_PASS=password -p 15672:15672 -p 5672:5672 rabbitmq:management</span><br></pre></td></tr></table></figure>
-<p><strong>redis:</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart=always -p 6379:6379 --name redis -d redis</span><br></pre></td></tr></table></figure>
-<p><strong>zookeeper:</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -e TZ=&quot;Asia/Shanghai&quot; -p 2181:2181 -v $PWD/data:/data --name zookeeper --restart always zookeeper</span><br></pre></td></tr></table></figure>
-<p><strong>postgres:</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name postgress --restart always -e TZ=&#x27;Asia/Shanghai&#x27; -e POSTGRES_PASSWORD=&#x27;1234qwer&#x27; -e ALLOW_IP_RANGE=0.0.0.0/0 -v pgdata:/var/lib/postgresql/data -p 55435:5432 -d postgres</span><br></pre></td></tr></table></figure>
-<p><strong>nginx:</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart always -d -p 80:80 --name my-nginx -v nginx-config:/etc/nginx/conf.d nginx</span><br></pre></td></tr></table></figure>
-<p><strong>sqlserver</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -e &quot;ACCEPT_EULA=Y&quot; -e &quot;MSSQL_SA_PASSWORD=Ex@mpleP@ssw0rd!&quot;  -p 1433:1433 --name sqlserver -v mssql_data:/var/opt/mssql  -d mcr.microsoft.com/mssql/server</span><br></pre></td></tr></table></figure>
-<p><strong>nexus3</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart always -d -p 18081:8081 --name nexus -e NEXUS_SECURITY_RANDOMPASSWORD=false -e NEXUS_SECURITY_DEFAULTADMINPASSWORD=admin123 -v nexus_data:/nexus-data sonatype/nexus3</span><br></pre></td></tr></table></figure>
-<p><strong>minio</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 9000:9000 -p 9090:9090 --name minio -d --restart=always -e &quot;MINIO_ACCESS_KEY=admin&quot; -e &quot;MINIO_SECRET_KEY=admin123456&quot; -v minio_data:/data -v minio_config:/root/.minio minio/minio server /data --console-address &quot;:9090&quot;</span><br></pre></td></tr></table></figure></li>
-</ol>
-</br>
-
-<hr>
-</br>
-
-<ul>
-<li><strong>总结</strong><br>本文讨论如何在windows环境下如何使用docker for windows搭建软件开发的调试环境，主要集中演示了如何安装docker for windows，并运行了postgresql容器。由于范围限定在开发调试环境，因此不设计生产环境的部署，也不推荐将上述配置用于生产。<br>数据卷的使用。如果你希望数据不随容器的关闭移除而消失，则必须使用数据卷挂载，请根据实际情况进行取舍</li>
-</ul>
-
-        
-        
-          <blockquote id="copyright">
-              <p>Original link: <a href="https://netforrobert.github.io/index.html">https://netforrobert.github.io/index.html</a></p>
-              <p>Copyright Notice: 转载请注明出处.</p>
-          </blockquote>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <div class="article-tag-wrap">
-          
-
-          
-          
-    <div class="social-share">
-      <span>Share:</span>
+      <span>Aktie:</span>
     </div>
 
 
@@ -1403,7 +1315,7 @@
 
     <nav id="page-nav">
 
-<span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next</a>
+<span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Nächster</a>
 </nav>
 
 
@@ -1413,9 +1325,13 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title"><i class="fa fa-posts"></i> Recent</h3>
+    <h3 class="widget-title"><i class="fa fa-posts"></i> Letzte</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2024/07/01/MetaContext%E6%A1%86%E6%9E%B6%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AE%A1%E8%AE%A1%E6%97%A5%E5%BF%97/">MetaContext框架的数据审计日志</a>
+          </li>
         
           <li>
             <a href="/2024/06/26/MetaContext%E6%A1%86%E6%9E%B6%E7%9A%84%E5%B9%B6%E5%8F%91%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">MetaContext框架的并发解决方案</a>
@@ -1433,10 +1349,6 @@
             <a href="/2024/04/23/%E4%BD%BF%E7%94%A8MetaContext%E6%A1%86%E6%9E%B6%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE/">使用MetaContext框架创建项目</a>
           </li>
         
-          <li>
-            <a href="/2024/04/20/MetaContext%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4/">MetaContext工具命令</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -1450,9 +1362,9 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title"><i class="fa fa-archive"></i> Archive</h3>
+    <h3 class="widget-title"><i class="fa fa-archive"></i> Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024年</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023年</a><span class="archive-list-count">4</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024年</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023年</a><span class="archive-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -1494,9 +1406,9 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       <p>
-        <a href="/sitemap.xml">Site Map</a>
-        <span> | </span><a href="/atom.xml">Subscribe to this site</a>
-        <span> | </span><a href="/about/">Contact the blogger</a>
+        <a href="/sitemap.xml">Sitemap</a>
+        <span> | </span><a href="/atom.xml">Abonnieren Sie diese Site</a>
+        <span> | </span><a href="/about/">Kontaktieren Sie den Blogger</a>
       </p>
       
         <p>

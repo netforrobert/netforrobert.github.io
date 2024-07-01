@@ -62,7 +62,7 @@
     </div>
     <div id="search-form">
       <div id="result-mask" class="hide"></div>
-      <label><input id="search-key" type="text" autocomplete="off" placeholder="search"></label>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="Suche"></label>
       <div id="result-wrap" class="hide">
         <div id="search-result"></div>
       </div>
@@ -83,6 +83,217 @@
 
       <div class="outer">
         <section id="main">
+  <article id="post-Windows下使用docker进行开发调试环境准备" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/11/09/Windows%E4%B8%8B%E4%BD%BF%E7%94%A8docker%E8%BF%9B%E8%A1%8C%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87/">Windows下使用docker进行开发调试环境准备</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2023-11-09T08:32:54.000Z" itemprop="datePublished">2023年11月09日</time>
+</span>
+      
+      
+      
+<a href="/2023/11/09/Windows%E4%B8%8B%E4%BD%BF%E7%94%A8docker%E8%BF%9B%E8%A1%8C%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87/#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  Gästebuch
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>现在的软件项目开发调试日趋复杂，经常需要一堆的软件环境才能正常的进行开发调试。比如数据库、redis、mq等等，这些软件安装麻烦还不好管理，平时不用还占着资源。有没有一种办法解决这个问题呢？答案是有的，我们可以借助docker来完成软件环境的准备，本文将在windows10&#x2F;11的环境下演示使用docker进行开发调试环境准备。</p>
+<ul>
+<li><strong>WSL2环境准备</strong><br>本文只推荐使用基于window for linux的docker安装，原因此处不便展开，具体请百度</li>
+</ul>
+<ol>
+<li><p>打开系统虚拟机平台和WSL(适用于Linux的window子系统)。<br>控制面板-&gt;程序-&gt;启用或关闭Windows功能-&gt;向下滑 勾选以下两项功能。<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/winfeatures.png" alt="winfeatures" title="windows功能"></p>
+</li>
+<li><p>下载支持Linux的内核wsl2<br>点击<a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/windows/wsl/wsl2-kernel">官网链接</a>，下载最新版本的更新包，双击运行安装即可。这时你的wsl就为wsl2了</p>
+</li>
+<li><p>设置Wsl默认版本<br>打开Powershell，输入命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl --set -default -version 2</span><br></pre></td></tr></table></figure>
+<p>如果仅需要安装docker for windows，那对于wsl2的安装就到此为止了，并不需要安装发行版</p>
+</li>
+</ol>
+</br>
+
+<hr>
+</br>
+
+<ul>
+<li><strong>Docker for Windows的安装</strong></li>
+</ul>
+<ol>
+<li><p>下载docker for windows<br>点击<a target="_blank" rel="noopener" href="https://www.docker.com/products/docker-desktop/">官网链接</a>，选择docker for windows下载安装</p>
+</li>
+<li><p>设置并启动docker<br>2.1 打开设置setting-&gt;General<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/dockersetting.png" alt="dockersetting" title="打开Docker设置"><br>2.2 勾选:Use the wsl2 based engine，并点击Apply &amp; restart<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/usewsl2.png" alt="usewsl2" title="使用Wsl2引擎"></p>
+</li>
+<li><p>设置国内镜像加速<br>由于各种原因，默认的镜像地址经常出现缓慢和不稳定，为了我们顺利的使用docker，需要设置国内镜像加速。<br>3.1 打开settings-&gt;Docker Engine<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/dockerengine.png" alt="dockerengine" title="Docker引擎"><br>3.2 设置registry-mirrors</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;builder&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;gc&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;defaultKeepStorage&quot;</span><span class="punctuation">:</span> <span class="string">&quot;20GB&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">     <span class="attr">&quot;experimental&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">     <span class="attr">&quot;registry-mirrors&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;https://自己生成.mirror.aliyuncs.com&quot;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p><strong>国内常用的镜像加速地址：</strong></p>
+<table>
+<thead>
+<tr>
+<th>镜像提供商</th>
+<th>地址url</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Docker中国区官方镜像</td>
+<td><a target="_blank" rel="noopener" href="https://registry.docker-cn.com/">https://registry.docker-cn.com</a></td>
+</tr>
+<tr>
+<td>网易</td>
+<td><a target="_blank" rel="noopener" href="http://hub-mirror.c.163.com/">http://hub-mirror.c.163.com</a></td>
+</tr>
+<tr>
+<td>阿里云（需要自己生成）</td>
+<td>登录：cr.console.aliyun.com</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+</br>
+
+<hr>
+</br>
+
+<ul>
+<li><strong>安装启动postresql数据库</strong><blockquote>
+<p>本节内容将完成postgresql的镜像启动，并将涉及docker的一个重要概念：数据卷的运用<br>数据卷的定义：Docker数据卷是一个可以在Docker容器和主机之间共享数据的特殊目录。它允许容器在不影响主机文件系统的情况下访问主机上的文件，并且可以在多个容器之间共享数据。使用数据卷可以方便地将数据持久化保存，并且在容器删除后仍然保留数据。数据卷是Docker中非常方便的功能，可以帮助用户更好地管理和维护容器化应用程序。<br>简略版：你如果不想<strong>数据随着容器的删除而消失</strong>，就必须独立于容器之外的数据卷<br>综上所述：对于启用postgresql容器，使用数据卷挂载是非常必要的</p>
+</blockquote>
+</li>
+</ul>
+<ol>
+<li><p>创建数据卷<br>1.1 使用下面的命令创建名为pgdata的数据卷</p>
+<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">volume</span><span class="language-bash"> create pgdata</span></span><br></pre></td></tr></table></figure>
+<p>1.2 查看数据卷，输入命令：</p>
+<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">volume</span><span class="language-bash"> list</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/volume-list.png" alt="dockervolumes" title="查看数据卷"></p>
+</li>
+<li><p>获取Docker镜像<br>2.1 查询目标镜像，输入命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker search postgres</span><br></pre></td></tr></table></figure>
+<p><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/searchimages.png" alt="searchimages" title="查询目标镜像"><br>2.2 拉取镜像</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull postgres</span><br></pre></td></tr></table></figure>
+<p><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/docker-images.png" alt="docker-images" title="本地镜像"></p>
+</li>
+<li><p>使用docker run 命令启动容器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name postgress --restart always -e TZ=&#x27;Asia/Shanghai&#x27; -e POSTGRES_PASSWORD=&#x27;1234qwer&#x27; -e ALLOW_IP_RANGE=0.0.0.0/0 -v pgdata:/var/lib/postgresql/data -p 55435:5432 -d postgres</span><br></pre></td></tr></table></figure>
+<p>查看已启动容器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+<p><strong>命令详解</strong></p>
+<table>
+<thead>
+<tr>
+<th>命令名称</th>
+<th>解释及描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>–name</td>
+<td>容器名称</td>
+</tr>
+<tr>
+<td>–restart always</td>
+<td>容器随docker启动而自动启动</td>
+</tr>
+<tr>
+<td>-e TZ&#x3D;’Asia&#x2F;Shanghai’</td>
+<td>设置时区</td>
+</tr>
+<tr>
+<td>-e POSTGRES_PASSWORD&#x3D;’1234qwer</td>
+<td>设置密码为1234qwer</td>
+</tr>
+<tr>
+<td>-e ALLOW_IP_RANGE&#x3D;0.0.0.0&#x2F;0</td>
+<td>允许远程访问</td>
+</tr>
+<tr>
+<td>-v pgdata:&#x2F;var&#x2F;lib&#x2F;postgresql&#x2F;data -p 55435:5432 -d postgres</td>
+<td>挂载数据目录到<strong>卷：pgdata</strong>（也就是我们第一步创建的数据卷）</td>
+</tr>
+<tr>
+<td>-p 55435:5432</td>
+<td>设置端口映射。55435（宿主机端口）:5432（容器端口）</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>连接测试数据库<br>  本节将使用pgadmin进行数据库连接测试<br>4.1 打开<a target="_blank" rel="noopener" href="https://www.pgadmin.org/download/pgadmin-4-windows/">官网链接</a>，下载安装<br>4.2 打开Servers-&gt;Register，如下图所示输入各种参数：<br>连接名：<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/pgadmin1.png" alt="连接名" title="连接名"><br>输入账号密码，默认账号postgres<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/pgadmin2.png" alt="账号密码" title="账号密码"><br>连接成功，则可以看到默认数据库postgres<br><img src="https://chenglin-oss.oss-cn-shenzhen.aliyuncs.com/articles/pgadmin3.png" alt="默认数据库" title="默认数据库"><br>4.3 其他常见的docker run命令<br><strong>ladp:</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart always -p 389:389 -p 636:636 --name my_ldap --network bridge --hostname openldap-host --env LDAP_ORGANISATION=&quot;passport&quot; --env LDAP_DOMAIN=&quot;passport.com&quot; --env LDAP_ADMIN_PASSWORD=&quot;1234qwer&quot; -v ldapdata:/etc/ldap/slapd.d -v ldapconfig:/var/lib/ldap --detach osixia/openldap</span><br></pre></td></tr></table></figure>
+<p><strong>rabbitmq:</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --hostname my-rabbit --name rabbit --restart always -e RABBITMQ_DEFAULT_USER=user -e RABBITMQ_DEFAULT_PASS=password -p 15672:15672 -p 5672:5672 rabbitmq:management</span><br></pre></td></tr></table></figure>
+<p><strong>redis:</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart=always -p 6379:6379 --name redis -d redis</span><br></pre></td></tr></table></figure>
+<p><strong>zookeeper:</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -e TZ=&quot;Asia/Shanghai&quot; -p 2181:2181 -v $PWD/data:/data --name zookeeper --restart always zookeeper</span><br></pre></td></tr></table></figure>
+<p><strong>postgres:</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --name postgress --restart always -e TZ=&#x27;Asia/Shanghai&#x27; -e POSTGRES_PASSWORD=&#x27;1234qwer&#x27; -e ALLOW_IP_RANGE=0.0.0.0/0 -v pgdata:/var/lib/postgresql/data -p 55435:5432 -d postgres</span><br></pre></td></tr></table></figure>
+<p><strong>nginx:</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart always -d -p 80:80 --name my-nginx -v nginx-config:/etc/nginx/conf.d nginx</span><br></pre></td></tr></table></figure>
+<p><strong>sqlserver</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -e &quot;ACCEPT_EULA=Y&quot; -e &quot;MSSQL_SA_PASSWORD=Ex@mpleP@ssw0rd!&quot;  -p 1433:1433 --name sqlserver -v mssql_data:/var/opt/mssql  -d mcr.microsoft.com/mssql/server</span><br></pre></td></tr></table></figure>
+<p><strong>nexus3</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --restart always -d -p 18081:8081 --name nexus -e NEXUS_SECURITY_RANDOMPASSWORD=false -e NEXUS_SECURITY_DEFAULTADMINPASSWORD=admin123 -v nexus_data:/nexus-data sonatype/nexus3</span><br></pre></td></tr></table></figure>
+<p><strong>minio</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 9000:9000 -p 9090:9090 --name minio -d --restart=always -e &quot;MINIO_ACCESS_KEY=admin&quot; -e &quot;MINIO_SECRET_KEY=admin123456&quot; -v minio_data:/data -v minio_config:/root/.minio minio/minio server /data --console-address &quot;:9090&quot;</span><br></pre></td></tr></table></figure></li>
+</ol>
+</br>
+
+<hr>
+</br>
+
+<ul>
+<li><strong>总结</strong><br>本文讨论如何在windows环境下如何使用docker for windows搭建软件开发的调试环境，主要集中演示了如何安装docker for windows，并运行了postgresql容器。由于范围限定在开发调试环境，因此不设计生产环境的部署，也不推荐将上述配置用于生产。<br>数据卷的使用。如果你希望数据不随容器的关闭移除而消失，则必须使用数据卷挂载，请根据实际情况进行取舍</li>
+</ul>
+
+        
+        
+          <blockquote id="copyright">
+              <p>Ursprünglicher Link: <a href="https://netforrobert.github.io/page/2/index.html">https://netforrobert.github.io/page/2/index.html</a></p>
+              <p>Copyright-Erklärung: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+          
+    <div class="social-share">
+      <span>Aktie:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
   <article id="post-hello-world" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
@@ -110,7 +321,7 @@
 <a href="/2023/11/08/hello-world/#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
-  Guestbook
+  Gästebuch
 </a>
 
 
@@ -134,8 +345,8 @@
         
         
           <blockquote id="copyright">
-              <p>Original link: <a href="https://netforrobert.github.io/page/2/index.html">https://netforrobert.github.io/page/2/index.html</a></p>
-              <p>Copyright Notice: 转载请注明出处.</p>
+              <p>Ursprünglicher Link: <a href="https://netforrobert.github.io/page/2/index.html">https://netforrobert.github.io/page/2/index.html</a></p>
+              <p>Copyright-Erklärung: 转载请注明出处.</p>
           </blockquote>
         
       
@@ -148,7 +359,7 @@
           
           
     <div class="social-share">
-      <span>Share:</span>
+      <span>Aktie:</span>
     </div>
 
 
@@ -165,7 +376,7 @@
 
     <nav id="page-nav">
 
-<a class="extend prev" rel="prev" href="/">Previous</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+<a class="extend prev" rel="prev" href="/">Vorheriger</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
 </nav>
 
 
@@ -175,9 +386,13 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title"><i class="fa fa-posts"></i> Recent</h3>
+    <h3 class="widget-title"><i class="fa fa-posts"></i> Letzte</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2024/07/01/MetaContext%E6%A1%86%E6%9E%B6%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AE%A1%E8%AE%A1%E6%97%A5%E5%BF%97/">MetaContext框架的数据审计日志</a>
+          </li>
         
           <li>
             <a href="/2024/06/26/MetaContext%E6%A1%86%E6%9E%B6%E7%9A%84%E5%B9%B6%E5%8F%91%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">MetaContext框架的并发解决方案</a>
@@ -195,10 +410,6 @@
             <a href="/2024/04/23/%E4%BD%BF%E7%94%A8MetaContext%E6%A1%86%E6%9E%B6%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE/">使用MetaContext框架创建项目</a>
           </li>
         
-          <li>
-            <a href="/2024/04/20/MetaContext%E5%B7%A5%E5%85%B7%E5%91%BD%E4%BB%A4/">MetaContext工具命令</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -212,9 +423,9 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title"><i class="fa fa-archive"></i> Archive</h3>
+    <h3 class="widget-title"><i class="fa fa-archive"></i> Archiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024年</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023年</a><span class="archive-list-count">4</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/">2024年</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/">2023年</a><span class="archive-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -256,9 +467,9 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       <p>
-        <a href="/sitemap.xml">Site Map</a>
-        <span> | </span><a href="/atom.xml">Subscribe to this site</a>
-        <span> | </span><a href="/about/">Contact the blogger</a>
+        <a href="/sitemap.xml">Sitemap</a>
+        <span> | </span><a href="/atom.xml">Abonnieren Sie diese Site</a>
+        <span> | </span><a href="/about/">Kontaktieren Sie den Blogger</a>
       </p>
       
         <p>
